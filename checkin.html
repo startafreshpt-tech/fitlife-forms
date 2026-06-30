@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fit Life After 40 — Weekly Check-In</title>
+<style>
+  :root{
+    --ink:#1c2b27; --muted:#5d6b66; --line:#dfe4e1;
+    --bg:#f4f1ea; --card:#ffffff;
+    --green:#1f6f54; --green-dark:#164f3d; --green-soft:#e8f1ec;
+    --gold:#c2792b; --gold-soft:#f7ecdc;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:620px; margin:0 auto; padding:32px 20px 80px;}
+  header.hero{text-align:center; padding:24px 0 8px;}
+  .badge{display:inline-block; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--green); background:var(--green-soft); padding:6px 14px; border-radius:999px; font-weight:600;}
+  h1{font-size:28px; line-height:1.2; margin:18px 0 8px; color:var(--green-dark);}
+  .sub{color:var(--muted); font-size:16px; max-width:480px; margin:0 auto;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; margin-top:18px;}
+  .q{font-weight:600; margin:0 0 8px; font-size:16px;}
+  .qnum{color:var(--gold); font-weight:700; margin-right:6px;}
+  .qhint{font-weight:400; color:var(--muted); font-size:13px; margin:-2px 0 8px;}
+  input[type=text], input[type=email], textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px;
+    font-size:16px; font-family:inherit; color:var(--ink); background:#fff;}
+  textarea{min-height:80px; resize:vertical;}
+  input:focus, textarea:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px var(--green-soft);}
+  .slider-wrap{display:flex; align-items:center; gap:16px; margin-top:4px;}
+  input[type=range]{flex:1; accent-color:var(--green);}
+  .score{font-size:26px; font-weight:700; color:var(--green-dark); min-width:42px; text-align:center;}
+  .scalehint{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:2px;}
+  .nudge{background:var(--gold-soft); border:1px solid #e6c79a; border-radius:10px; padding:12px 14px; margin-top:10px;
+    font-size:14px; color:#6b4a1e;}
+  button.submit{margin-top:24px; width:100%; background:var(--green); color:#fff; border:none;
+    padding:16px; font-size:17px; font-weight:700; border-radius:12px; cursor:pointer; transition:.15s;}
+  button.submit:hover{background:var(--green-dark);}
+  button.submit:disabled{opacity:.6; cursor:default;}
+  #msg{margin-top:18px; padding:14px 16px; border-radius:10px; font-size:15px; display:none;}
+  #msg.err{display:block; background:#fde8e6; color:#9a2b1e; border:1px solid #f4c4bd;}
+  .done{text-align:center; padding:36px 20px;}
+  .done h2{color:var(--green-dark); font-size:24px; margin-bottom:6px;}
+  .streak{font-size:40px; font-weight:800; color:var(--gold); margin:8px 0;}
+  .done p{color:var(--muted); font-size:16px;}
+  .done .group-cta{background:var(--gold-soft); border:1px solid #e6c79a; border-radius:10px; padding:14px 16px; margin:16px 0; color:#6b4a1e; font-size:15px; font-weight:600;}
+  footer{text-align:center; color:var(--muted); font-size:13px; margin-top:36px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="badge">Fit Life After 40</span>
+    <h1>Your weekly check-in</h1>
+    <p class="sub">Two minutes, honest answers. This is how we keep you moving and spot anything worth a closer look. Every week counts.</p>
+  </header>
+
+  <form id="form">
+
+    <section class="card">
+      <p class="q">First name</p>
+      <input type="text" name="first_name" placeholder="So we know it's you" />
+      <p class="q" style="margin-top:16px;">The email you signed up with</p>
+      <input type="email" name="email" placeholder="name@email.com" required />
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">1.</span>What are your goals, and why do they matter to you?</p>
+      <p class="qhint">A quick reminder to yourself. The people who read their goals often are the ones who get there.</p>
+      <textarea name="weekly_goal_reflection" placeholder="In your own words — what you're working towards, and why it matters."></textarea>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">2.</span>How many times did you train this week?</p>
+      <div class="slider-wrap"><input type="range" min="0" max="7" value="2" id="sessions"><span class="score" id="sessionsVal">2</span></div>
+      <div class="scalehint"><span>None this week</span><span>Every day</span></div>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">3.</span>How did your body feel?</p>
+      <div class="slider-wrap"><input type="range" min="1" max="10" value="6" id="body"><span class="score" id="bodyVal">6</span></div>
+      <div class="scalehint"><span>Rough</span><span>Great</span></div>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">4.</span>Energy levels this week?</p>
+      <div class="slider-wrap"><input type="range" min="1" max="10" value="6" id="energy"><span class="score" id="energyVal">6</span></div>
+      <div class="scalehint"><span>Drained</span><span>Buzzing</span></div>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">5.</span>Sleep quality?</p>
+      <div class="slider-wrap"><input type="range" min="1" max="10" value="6" id="sleep"><span class="score" id="sleepVal">6</span></div>
+      <div class="scalehint"><span>Poor</span><span>Brilliant</span></div>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">6.</span>Any pain or niggles?</p>
+      <input type="text" name="pain_mentioned" placeholder="Knee, shoulder, back… or leave blank if all good" />
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">7.</span>One win this week</p>
+      <input type="text" name="one_win" placeholder="Big or small — it counts" />
+      <div class="nudge">Proud of this one? Post it in the group — your wins push everyone else on. 👊</div>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">8.</span>One struggle this week</p>
+      <input type="text" name="one_struggle" placeholder="What got in the way?" />
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">9.</span>Motivation level?</p>
+      <div class="slider-wrap"><input type="range" min="1" max="10" value="6" id="motivation"><span class="score" id="motivationVal">6</span></div>
+      <div class="scalehint"><span>Running low</span><span>Fired up</span></div>
+    </section>
+
+    <section class="card">
+      <p class="q"><span class="qnum">10.</span>What do you need help with this week?</p>
+      <input type="text" name="needs_help" placeholder="A movement, a plan, a nudge — whatever it is" />
+      <div class="nudge">Post your question in the group too — chances are someone's been exactly where you are.</div>
+    </section>
+
+    <button type="submit" class="submit" id="submitBtn">Send this week's check-in</button>
+    <div id="msg"></div>
+  </form>
+
+  <div id="doneScreen" style="display:none;">
+    <div class="card done">
+      <h2>Logged. Nice one. 👊</h2>
+      <div class="streak" id="streakLine"></div>
+      <div class="group-cta">Don't forget — post your win and what you need help with in the group. That's where the real momentum happens.</div>
+      <p id="doneMsg">That's another week in the bank. Gavyn will be in touch.</p>
+      <p style="margin-top:16px; color:var(--green-dark); font-weight:600;">Keep going,<br>Gavyn</p>
+    </div>
+  </div>
+
+  <footer>Fit Life After 40 · One check-in a week is the habit that builds everything else.</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://eqevyohstkwqslloqsni.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_sXCosNFUdqcFvpG2aJnYlw_bTg9M9dn";
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  ['sessions','body','energy','sleep','motivation'].forEach(id=>{
+    const s = document.getElementById(id);
+    s.addEventListener('input', ()=> document.getElementById(id+'Val').textContent = s.value);
+  });
+
+  function val(name){ const el = document.querySelector(`[name="${name}"]`); return el ? el.value.trim() : ''; }
+
+  document.getElementById('form').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('msg');
+    msg.className=''; msg.style.display='none';
+
+    const email = val('email');
+    if(!email){
+      msg.className='err'; msg.textContent='Please add the email you signed up with so we can match your check-in.';
+      msg.scrollIntoView({behavior:'smooth',block:'center'}); return;
+    }
+
+    const payload = {
+      p_email: email,
+      p_first_name: val('first_name') || null,
+      p_sessions_count: parseInt(document.getElementById('sessions').value,10),
+      p_body_feeling: parseInt(document.getElementById('body').value,10),
+      p_energy_level: parseInt(document.getElementById('energy').value,10),
+      p_sleep_quality: parseInt(document.getElementById('sleep').value,10),
+      p_pain_mentioned: val('pain_mentioned') || null,
+      p_one_win: val('one_win') || null,
+      p_one_struggle: val('one_struggle') || null,
+      p_motivation_score: parseInt(document.getElementById('motivation').value,10),
+      p_weekly_goal_reflection: val('weekly_goal_reflection') || null,
+      p_needs_help: val('needs_help') || null
+    };
+
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try{
+      const { data, error } = await sb.rpc('submit_checkin', payload);
+      if(error) throw error;
+      const streak = data && data.current_streak ? data.current_streak : null;
+      const line = document.getElementById('streakLine');
+      if(streak){ line.textContent = streak === 1 ? 'Week 1' : streak + ' weeks running'; }
+      document.getElementById('form').style.display='none';
+      document.getElementById('doneScreen').style.display='block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }catch(err){
+      msg.className='err';
+      const m = (err.message||'').includes('no_member')
+        ? "We couldn't find that email. Make sure it's the one you signed up with — or fill in the welcome form first."
+        : 'Something went wrong sending that. Please try again — if it keeps happening, let Gavyn know.';
+      msg.textContent = m;
+      msg.scrollIntoView({behavior:'smooth',block:'center'});
+      btn.disabled=false; btn.textContent="Send this week's check-in";
+    }
+  });
+</script>
+</body>
+</html>

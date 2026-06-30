@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fit Life After 40 — Welcome / Your Starting Point</title>
+<style>
+  :root{
+    --ink:#1c2b27; --muted:#5d6b66; --line:#dfe4e1;
+    --bg:#f4f1ea; --card:#ffffff;
+    --green:#1f6f54; --green-dark:#164f3d; --green-soft:#e8f1ec;
+    --gold:#c2792b; --gold-soft:#f7ecdc;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px; margin:0 auto; padding:32px 20px 80px;}
+  header.hero{text-align:center; padding:24px 0 8px;}
+  .badge{display:inline-block; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--green); background:var(--green-soft); padding:6px 14px; border-radius:999px; font-weight:600;}
+  h1{font-size:30px; line-height:1.2; margin:18px 0 8px; color:var(--green-dark);}
+  .sub{color:var(--muted); font-size:16px; max-width:520px; margin:0 auto;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; margin-top:22px;}
+  .step{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold);}
+  .card h2{font-size:20px; margin:6px 0 4px; color:var(--green-dark);}
+  .card p.lead{color:var(--muted); margin:0 0 18px; font-size:15px;}
+  label{display:block; font-weight:600; margin:16px 0 6px; font-size:15px;}
+  .hint{font-weight:400; color:var(--muted); font-size:13px; margin-top:2px;}
+  input[type=text], input[type=email], input[type=date], textarea, select{
+    width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px;
+    font-size:16px; font-family:inherit; color:var(--ink); background:#fff;
+  }
+  textarea{min-height:92px; resize:vertical;}
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px var(--green-soft);}
+  .row{display:flex; gap:14px; flex-wrap:wrap;}
+  .row > div{flex:1; min-width:160px;}
+  .types{display:flex; gap:12px; margin-top:6px;}
+  .type-opt{flex:1; border:1px solid var(--line); border-radius:10px; padding:14px; cursor:pointer; text-align:center; transition:.15s;}
+  .type-opt input{display:none;}
+  .type-opt:hover{border-color:var(--green);}
+  .type-opt.active{border-color:var(--green); background:var(--green-soft);}
+  .type-opt strong{display:block; color:var(--green-dark);}
+  .type-opt span{font-size:13px; color:var(--muted);}
+  .days{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;}
+  .day{border:1px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer; font-size:14px; user-select:none;}
+  .day input{display:none;}
+  .day.active{background:var(--green); color:#fff; border-color:var(--green);}
+  .slider-wrap{display:flex; align-items:center; gap:16px; margin-top:10px;}
+  input[type=range]{flex:1; accent-color:var(--green);}
+  .score{font-size:28px; font-weight:700; color:var(--green-dark); min-width:46px; text-align:center;}
+  /* Accountability — the standout section */
+  .card.accountability{background:linear-gradient(180deg,#fffdf8,#fbf3e4); border:2px solid var(--gold);}
+  .card.accountability .step{color:var(--gold);}
+  .card.accountability h2{color:var(--gold);}
+  .card.accountability .quote{font-size:17px; font-style:italic; color:#6b4a1e; border-left:3px solid var(--gold); padding-left:14px; margin:0 0 16px;}
+  .card.accountability textarea{min-height:120px; border-color:var(--gold); background:#fff;}
+  button.submit{margin-top:26px; width:100%; background:var(--green); color:#fff; border:none;
+    padding:16px; font-size:17px; font-weight:700; border-radius:12px; cursor:pointer; transition:.15s;}
+  button.submit:hover{background:var(--green-dark);}
+  button.submit:disabled{opacity:.6; cursor:default;}
+  .req{color:var(--gold);}
+  #msg{margin-top:18px; padding:14px 16px; border-radius:10px; font-size:15px; display:none;}
+  #msg.err{display:block; background:#fde8e6; color:#9a2b1e; border:1px solid #f4c4bd;}
+  #msg.ok{display:block; background:var(--green-soft); color:var(--green-dark); border:1px solid #bcd9c9;}
+  .done{text-align:center; padding:40px 20px;}
+  .done h2{color:var(--green-dark); font-size:26px;}
+  .done p{color:var(--muted); font-size:16px;}
+  footer{text-align:center; color:var(--muted); font-size:13px; margin-top:40px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="badge">Fit Life After 40</span>
+    <h1>Let's map out your starting point</h1>
+    <p class="sub">This is where it begins. A few honest answers now means every bit of coaching you get from here is built around <em>you</em> — not anyone else. Takes about 5 minutes. There are no wrong answers.</p>
+  </header>
+
+  <form id="form">
+
+    <!-- 1. Basics -->
+    <section class="card">
+      <span class="step">Step 1 of 7</span>
+      <h2>The basics</h2>
+      <p class="lead">So we know who we're talking to.</p>
+      <div class="row">
+        <div>
+          <label>First name <span class="req">*</span></label>
+          <input type="text" name="first_name" required />
+        </div>
+        <div>
+          <label>Last name <span class="req">*</span></label>
+          <input type="text" name="last_name" required />
+        </div>
+      </div>
+      <label>Email <span class="req">*</span></label>
+      <input type="email" name="email" required />
+      <label>Birthday <span class="hint">(optional — we like to mark the day)</span></label>
+      <input type="date" name="birthday" />
+      <label>How do you train with us? <span class="req">*</span></label>
+      <div class="types">
+        <label class="type-opt" id="t-studio">
+          <input type="radio" name="member_type" value="studio" required />
+          <strong>In the studio</strong><span>I train in person</span>
+        </label>
+        <label class="type-opt" id="t-online">
+          <input type="radio" name="member_type" value="online" />
+          <strong>Online</strong><span>I train from home</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- 2. Goals -->
+    <section class="card">
+      <span class="step">Step 2 of 7</span>
+      <h2>Your goals</h2>
+      <p class="lead">What are we working towards together?</p>
+      <label>What do you want to achieve?</label>
+      <textarea name="goals" placeholder="Strength, energy, keeping up with the grandkids, walking the hills without stopping — whatever it is for you."></textarea>
+      <label>What does that look, feel and sound like when you've got there?</label>
+      <textarea name="goal_feels_like" placeholder="Paint the picture. How will you know you're there?"></textarea>
+    </section>
+
+    <!-- 3. Why -->
+    <section class="card">
+      <span class="step">Step 3 of 7</span>
+      <h2>Your why</h2>
+      <p class="lead">This is the bit that keeps you going when motivation dips.</p>
+      <label>Why does this matter to you right now?</label>
+      <textarea name="why_now" placeholder="Your real reason. The honest one."></textarea>
+      <label>What happens if nothing changes in 12 months?</label>
+      <textarea name="why_cost" placeholder="Sometimes facing this is what makes us act."></textarea>
+    </section>
+
+    <!-- 4. Obstacles -->
+    <section class="card">
+      <span class="step">Step 4 of 7</span>
+      <h2>Your obstacles</h2>
+      <p class="lead">No judgement here. Knowing what's got in the way helps us work around it.</p>
+      <label>What's stopped you before?</label>
+      <textarea name="stopped_before" placeholder="Time, injury, life getting busy, losing momentum — whatever's true."></textarea>
+      <label>What do you tell yourself that gets in the way?</label>
+      <textarea name="self_talk" placeholder="The story in your head on the days you don't show up."></textarea>
+    </section>
+
+    <!-- 5. Commitment -->
+    <section class="card">
+      <span class="step">Step 5 of 7</span>
+      <h2>Your commitment</h2>
+      <p class="lead">Let's be realistic and specific.</p>
+      <label>How important are these goals to you, honestly?</label>
+      <div class="slider-wrap">
+        <input type="range" name="importance_score" min="1" max="10" value="7" id="imp" />
+        <span class="score" id="impVal">7</span>
+      </div>
+      <label>Which days are you committing to training?</label>
+      <div class="days" id="days">
+        <label class="day"><input type="checkbox" value="Mon">Mon</label>
+        <label class="day"><input type="checkbox" value="Tue">Tue</label>
+        <label class="day"><input type="checkbox" value="Wed">Wed</label>
+        <label class="day"><input type="checkbox" value="Thu">Thu</label>
+        <label class="day"><input type="checkbox" value="Fri">Fri</label>
+        <label class="day"><input type="checkbox" value="Sat">Sat</label>
+        <label class="day"><input type="checkbox" value="Sun">Sun</label>
+      </div>
+      <label>What time of day works best?</label>
+      <input type="text" name="training_time" placeholder="e.g. early mornings, after work, weekend mornings" />
+    </section>
+
+    <!-- 6. Accountability — STANDOUT -->
+    <section class="card accountability">
+      <span class="step">Step 6 of 7 — the most important question</span>
+      <h2>Your accountability</h2>
+      <p class="quote">"If in six weeks you wake up and you really don't feel like it… what do you want us to remind you of?"</p>
+      <p class="lead" style="color:#6b4a1e;">Write it in your own words. When your motivation dips, we'll send this back to you — exactly as you wrote it. So make it count.</p>
+      <textarea name="accountability_statement" placeholder="Write the words that will get you out the door on the hard days."></textarea>
+    </section>
+
+    <!-- 7. Personal -->
+    <section class="card">
+      <span class="step">Step 7 of 7</span>
+      <h2>A little about you</h2>
+      <p class="lead">The personal things that help Gavyn coach the whole person, not just the workout.</p>
+      <label>Family <span class="hint">(spouse, kids, grandkids — whatever you'd like us to know)</span></label>
+      <textarea name="family_context" placeholder="The people in your corner."></textarea>
+      <label>Anything we should know about your health? <span class="hint">(injuries, conditions, anything we should work around)</span></label>
+      <textarea name="health_conditions" placeholder="Knees, shoulders, blood pressure, recent surgery — only what you're comfortable sharing."></textarea>
+      <label>Anything else you'd like Gavyn to know?</label>
+      <textarea name="anything_else" placeholder="The floor is yours."></textarea>
+    </section>
+
+    <button type="submit" class="submit" id="submitBtn">Send my starting point to Gavyn</button>
+    <div id="msg"></div>
+  </form>
+
+  <div id="doneScreen" style="display:none;">
+    <div class="card done">
+      <h2>That's you, sorted. 👊</h2>
+      <p>Thanks for being honest — that's exactly what makes this work. Gavyn's got everything he needs to coach you properly from here.</p>
+      <p>Keep an eye on your inbox. We'll be in touch.</p>
+      <p style="margin-top:20px; color:var(--green-dark); font-weight:600;">Keep going,<br>Gavyn</p>
+    </div>
+  </div>
+
+  <footer>Fit Life After 40 · Strength and energy for life after 40 · You can update any of this later.</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ---- Supabase config ----
+  const SUPABASE_URL = "https://eqevyohstkwqslloqsni.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_sXCosNFUdqcFvpG2aJnYlw_bTg9M9dn";
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // ---- UI interactions ----
+  document.querySelectorAll('.type-opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('active'));
+      opt.classList.add('active');
+      opt.querySelector('input').checked = true;
+    });
+  });
+  document.querySelectorAll('.day').forEach(d=>{
+    d.addEventListener('click', ()=> setTimeout(()=> d.classList.toggle('active', d.querySelector('input').checked),0));
+  });
+  const imp = document.getElementById('imp');
+  imp.addEventListener('input', ()=> document.getElementById('impVal').textContent = imp.value);
+
+  // ---- Helpers ----
+  function combine(parts){ return parts.filter(p=>p && p.trim()).join('\n\n').trim() || null; }
+  function val(name){ const el = document.querySelector(`[name="${name}"]`); return el ? el.value.trim() : ''; }
+
+  // ---- Submit ----
+  document.getElementById('form').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('msg');
+    msg.className=''; msg.style.display='none';
+
+    const first = val('first_name'), last = val('last_name'), email = val('email');
+    const mtype = (document.querySelector('[name="member_type"]:checked')||{}).value;
+    if(!first || !last || !email || !mtype){
+      msg.className='err'; msg.textContent='Please fill in your name, email and how you train with us.';
+      msg.scrollIntoView({behavior:'smooth',block:'center'}); return;
+    }
+
+    const days = Array.from(document.querySelectorAll('#days input:checked')).map(c=>c.value);
+    const trainingDays = combine([
+      days.length ? 'Days: ' + days.join(', ') : '',
+      val('training_time') ? 'Time: ' + val('training_time') : ''
+    ]);
+
+    const payload = {
+      p_first_name: first,
+      p_last_name: last,
+      p_email: email,
+      p_member_type: mtype,
+      p_birthday: val('birthday') || null,
+      p_goals: val('goals') || null,
+      p_goal_feels_like: val('goal_feels_like') || null,
+      p_why_it_matters: combine([
+        val('why_now') ? 'Why it matters now: ' + val('why_now') : '',
+        val('why_cost') ? 'If nothing changes in 12 months: ' + val('why_cost') : ''
+      ]),
+      p_limiting_beliefs: combine([
+        val('stopped_before') ? "What's stopped me before: " + val('stopped_before') : '',
+        val('self_talk') ? 'What I tell myself: ' + val('self_talk') : ''
+      ]),
+      p_accountability_statement: val('accountability_statement') || null,
+      p_training_days: trainingDays,
+      p_importance_score: parseInt(imp.value,10),
+      p_family_context: val('family_context') || null,
+      p_health_conditions: combine([
+        val('health_conditions'),
+        val('anything_else') ? 'Also wanted you to know: ' + val('anything_else') : ''
+      ])
+    };
+
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try{
+      const { data, error } = await sb.rpc('submit_onboarding', payload);
+      if(error) throw error;
+      document.getElementById('form').style.display='none';
+      document.getElementById('doneScreen').style.display='block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }catch(err){
+      msg.className='err';
+      msg.textContent = 'Something went wrong saving that. Please try again — if it keeps happening, let Gavyn know. ('+(err.message||'error')+')';
+      msg.scrollIntoView({behavior:'smooth',block:'center'});
+      btn.disabled=false; btn.textContent='Send my starting point to Gavyn';
+    }
+  });
+</script>
+</body>
+</ht
