@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fit Life After 40 — Review</title>
+<style>
+  :root{ --ink:#1c2b27; --muted:#5d6b66; --line:#dfe4e1; --bg:#f4f1ea; --card:#fff;
+    --green:#1f6f54; --green-dark:#164f3d; --green-soft:#e8f1ec; --gold:#c2792b; --gold-soft:#f7ecdc;
+    --red:#9a2b1e; --red-soft:#fde8e6; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55;}
+  .wrap{max-width:920px; margin:0 auto; padding:24px 18px 80px;}
+  h1{font-size:22px; color:var(--green-dark); margin:0;}
+  .topbar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+  .badge-brand{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); background:var(--green-soft); padding:5px 12px; border-radius:999px; font-weight:600;}
+  button{font-family:inherit; font-size:14px; border-radius:9px; border:1px solid var(--line); background:#fff; padding:9px 14px; cursor:pointer; transition:.12s;}
+  button:hover{border-color:var(--green);}
+  button.primary{background:var(--green); color:#fff; border-color:var(--green); font-weight:600;}
+  button.primary:hover{background:var(--green-dark);}
+  button.gold{background:var(--gold); color:#fff; border-color:var(--gold); font-weight:600;}
+  input, textarea{font-family:inherit; font-size:14px; border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%; color:var(--ink); background:#fff;}
+  input:focus, textarea:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px var(--green-soft);}
+  textarea{min-height:150px; resize:vertical; line-height:1.6;}
+  .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;}
+  .toggle{display:flex; align-items:center; gap:7px; font-size:14px; color:var(--muted);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:16px;}
+  .card.flag{border-color:#e6b8a8; box-shadow:inset 3px 0 0 var(--gold);}
+  .memhead{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .memname{font-size:17px; font-weight:600; color:var(--green-dark);}
+  .pill{font-size:12px; padding:3px 9px; border-radius:999px; font-weight:600;}
+  .pill.streak{background:var(--green-soft); color:var(--green-dark);}
+  .pill.type{background:#eee; color:#555;}
+  .pill.pain{background:var(--red-soft); color:var(--red);}
+  .pill.mot{background:var(--gold-soft); color:#6b4a1e;}
+  .pill.status{background:#eef; color:#334;}
+  .meta{font-size:12px; color:var(--muted); margin-top:2px;}
+  .checkin{background:#faf8f3; border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:14px 0; font-size:13.5px;}
+  .checkin b{color:var(--green-dark);}
+  .scores{display:flex; gap:14px; flex-wrap:wrap; margin:6px 0; font-size:13px; color:var(--muted);}
+  .label{font-size:12px; color:var(--muted); margin:12px 0 5px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center;}
+  .timebox{display:flex; gap:6px; align-items:center; margin-left:auto; font-size:13px; color:var(--muted);}
+  .timebox input{width:auto;}
+  .empty{text-align:center; color:var(--muted); padding:40px; background:#fff; border:1px dashed var(--line); border-radius:14px;}
+  #login{max-width:360px; margin:80px auto; text-align:center;}
+  #login .card{padding:28px;}
+  .note{font-size:12px; color:var(--muted); margin-top:8px;}
+  #msg{font-size:13px; padding:8px 12px; border-radius:8px; margin-left:8px; display:none;}
+  #msg.ok{display:inline-block; background:var(--green-soft); color:var(--green-dark);}
+  #msg.err{display:inline-block; background:var(--red-soft); color:var(--red);}
+  .searchpanel{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:18px;}
+  .searchresult{padding:8px 10px; border:1px solid var(--line); border-radius:8px; margin-top:8px; cursor:pointer; font-size:14px;}
+  .searchresult:hover{border-color:var(--green); background:var(--green-soft);}
+  .detail{font-size:13.5px;}
+  .detail h3{font-size:15px; color:var(--green-dark); margin:14px 0 4px;}
+  .hist{border-left:2px solid var(--line); padding-left:12px; margin:8px 0; font-size:13px;}
+  .tag{display:inline-block; font-size:11px; background:#eee; border-radius:6px; padding:1px 6px; margin-left:6px; color:#555;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="login">
+    <span class="badge-brand">Fit Life After 40</span>
+    <div class="card">
+      <h1 style="margin-bottom:14px;">Coach review</h1>
+      <input type="password" id="pw" placeholder="Admin password" />
+      <button class="primary" style="width:100%; margin-top:12px;" onclick="login()">Log in</button>
+      <div class="note" id="loginNote"></div>
+    </div>
+  </div>
+
+  <div id="app" style="display:none;">
+    <div class="topbar">
+      <span class="badge-brand">Fit Life After 40</span>
+      <h1>Coach review</h1>
+      <span id="msg"></span>
+      <button style="margin-left:auto;" onclick="logout()">Log out</button>
+    </div>
+
+    <div class="searchpanel">
+      <div class="controls" style="margin:0;">
+        <input type="text" id="searchQ" placeholder="Search a member by name or email" style="flex:1; min-width:200px;" onkeydown="if(event.key==='Enter')doSearch()" />
+        <button onclick="doSearch()">Search</button>
+      </div>
+      <div id="searchResults"></div>
+      <div id="memberDetail"></div>
+    </div>
+
+    <div class="controls">
+      <strong style="font-size:16px; color:var(--green-dark);">Pending queue</strong>
+      <label class="toggle"><input type="checkbox" id="flaggedOnly" onchange="loadQueue()" style="width:auto;" /> Flagged only (pain / low motivation)</label>
+      <button style="margin-left:auto;" onclick="loadQueue()">Refresh</button>
+    </div>
+    <div id="queue"></div>
+  </div>
+
+</div>
+
+<script>
+  const API = "https://eqevyohstkwqslloqsni.supabase.co/functions/v1/admin-api";
+  let PW = sessionStorage.getItem("fl_admin_pw") || "";
+
+  async function call(payload){
+    const r = await fetch(API, { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ password: PW, ...payload }) });
+    return r.json();
+  }
+  function flash(text, ok=true){ const m=document.getElementById("msg"); m.textContent=text; m.className= ok?"ok":"err"; setTimeout(()=>{m.className="";}, 2500); }
+  function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  async function login(){
+    PW = document.getElementById("pw").value;
+    const res = await call({ action:"ping" });
+    if(res.ok){ sessionStorage.setItem("fl_admin_pw", PW); showApp(); }
+    else { document.getElementById("loginNote").textContent = res.error==="unauthorized" ? "Wrong password." : (res.error||"Could not log in."); }
+  }
+  function logout(){ sessionStorage.removeItem("fl_admin_pw"); PW=""; location.reload(); }
+  function showApp(){ document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; loadQueue(); }
+
+  function localInput(iso){ if(!iso) return ""; const d=new Date(iso); const p=n=>String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes()); }
+  function whenText(iso){ if(!iso) return "no send time set"; const d=new Date(iso); const now=new Date(); const diff=(d-now)/60000; const t=d.toLocaleString("en-NZ",{weekday:"short",hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"}); return diff>0 ? ("sends "+t) : ("was due "+t); }
+  function flagsHtml(c){ let h=""; if(c.flagged_pain) h+='<span class="pill pain">pain</span> '; if(c.flagged_low_motivation) h+='<span class="pill mot">low motivation</span> '; return h; }
+
+  async function loadQueue(){
+    const q = document.getElementById("queue");
+    q.innerHTML = '<div class="empty">Loading...</div>';
+    const flaggedOnly = document.getElementById("flaggedOnly").checked;
+    const res = await call({ action:"pending", flaggedOnly });
+    if(!res.ok){ q.innerHTML = '<div class="empty">'+esc(res.error||"Error loading")+'</div>'; return; }
+    if(!res.items.length){ q.innerHTML = '<div class="empty">Nothing waiting. All caught up. 👊</div>'; return; }
+    q.innerHTML = res.items.map(renderCard).join("");
+  }
+
+  function renderCard(c){
+    const m = c.members || {};
+    const name = esc((m.first_name||"")+" "+(m.last_name||"")).trim() || "Member";
+    const draft = c.final_response || c.ai_draft_response || "";
+    const scores = 'Trained: <b>'+esc(c.trained_this_week||"-")+'</b> ('+(c.sessions_count??0)+' sessions) &nbsp;·&nbsp; Body '+ (c.body_feeling??"-") +' &nbsp; Energy '+ (c.energy_level??"-") +' &nbsp; Sleep '+ (c.sleep_quality??"-") +' &nbsp; Motivation '+ (c.motivation_score??"-");
+    const bits = [];
+    if(c.weekly_goal_reflection) bits.push('<div><b>Their goals:</b> '+esc(c.weekly_goal_reflection)+'</div>');
+    if(c.pain_mentioned) bits.push('<div><b>Pain:</b> '+esc(c.pain_mentioned)+'</div>');
+    if(c.one_win) bits.push('<div><b>Win:</b> '+esc(c.one_win)+'</div>');
+    if(c.one_struggle) bits.push('<div><b>Struggle:</b> '+esc(c.one_struggle)+'</div>');
+    if(c.needs_help) bits.push('<div><b>Needs help:</b> '+esc(c.needs_help)+'</div>');
+    return '<div class="card '+(c.flagged_for_review?"flag":"")+'">'
+      + '<div class="memhead"><span class="memname">'+name+'</span>'
+      + '<span class="pill streak">'+(m.current_streak??0)+'wk streak</span>'
+      + '<span class="pill type">'+esc(m.member_type||"-")+'</span> '
+      + flagsHtml(c)
+      + '<span class="pill status">'+esc(c.response_status)+'</span>'
+      + '</div>'
+      + '<div class="meta">'+esc(m.email||"")+' · checked in '+ new Date(c.submitted_at).toLocaleString("en-NZ",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) +'</div>'
+      + '<div class="checkin"><div class="scores">'+scores+'</div>'+ bits.join("") +'</div>'
+      + '<div class="label">Draft reply (edit if you like)</div>'
+      + '<textarea id="ta_'+c.id+'">'+esc(draft)+'</textarea>'
+      + '<div class="actions">'
+      + '<button onclick="saveEdit(\''+c.id+'\')">Save edit</button>'
+      + '<button class="primary" onclick="approve(\''+c.id+'\',false)">Approve</button>'
+      + '<button class="gold" onclick="approve(\''+c.id+'\',true)">Approve &amp; send now</button>'
+      + '<span class="timebox"><span>'+whenText(c.send_scheduled_at)+'</span>'
+      + '<input type="datetime-local" id="dt_'+c.id+'" value="'+localInput(c.send_scheduled_at)+'" />'
+      + '<button onclick="setTime(\''+c.id+'\')">Set</button></span>'
+      + '</div></div>';
+  }
+
+  async function saveEdit(id){ const text=document.getElementById("ta_"+id).value; const r=await call({action:"save_edit", checkin_id:id, text}); if(r.ok){flash("Saved");} else flash(r.error||"Error",false); }
+  async function approve(id, sendNow){ const text=document.getElementById("ta_"+id).value; await call({action:"save_edit", checkin_id:id, text}); const r=await call({action:"approve", checkin_id:id, sendNow}); if(r.ok){flash(sendNow?"Approved, queued to send now":"Approved"); loadQueue();} else flash(r.error||"Error",false); }
+  async function setTime(id){ const v=document.getElementById("dt_"+id).value; if(!v){flash("Pick a time",false);return;} const iso=new Date(v).toISOString(); const r=await call({action:"set_time", checkin_id:id, send_at:iso}); if(r.ok){flash("Send time updated"); loadQueue();} else flash(r.error||"Error",false); }
+
+  async function doSearch(){
+    const q=document.getElementById("searchQ").value.trim();
+    const box=document.getElementById("searchResults"); document.getElementById("memberDetail").innerHTML="";
+    if(!q){ box.innerHTML=""; return; }
+    const r=await call({action:"search", q});
+    if(!r.ok){ box.innerHTML='<div class="note">'+esc(r.error||"Error")+'</div>'; return; }
+    if(!r.members.length){ box.innerHTML='<div class="note">No members found.</div>'; return; }
+    box.innerHTML = r.members.map(m=>'<div class="searchresult" onclick="memberDetail(\''+m.id+'\')"><b>'+esc((m.first_name||"")+" "+(m.last_name||""))+'</b> · '+esc(m.email||"")+' <span class="tag">'+(m.current_streak??0)+'wk</span> <span class="tag">'+esc(m.member_type||"")+'</span></div>').join("");
+  }
+
+  async function memberDetail(id){
+    const r=await call({action:"member_detail", member_id:id});
+    const box=document.getElementById("memberDetail");
+    if(!r.ok){ box.innerHTML='<div class="note">'+esc(r.error||"Error")+'</div>'; return; }
+    const m=r.member||{}, p=r.profile||{};
+    let h='<div class="detail card" style="margin-top:12px;">';
+    h+='<div class="memname">'+esc((m.first_name||"")+" "+(m.last_name||""))+'</div>';
+    h+='<div class="meta">'+esc(m.email||"")+' · joined '+esc(m.join_date||"-")+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+') · '+esc(m.member_type||"-")+'</div>';
+    h+='<h3>Their why and goals</h3>';
+    h+='<div><b>Goals:</b> '+esc(p.goals||"-")+'</div>';
+    h+='<div><b>Why it matters:</b> '+esc(p.why_it_matters||"-")+'</div>';
+    h+='<div><b>Accountability statement:</b> '+esc(p.accountability_statement||"-")+'</div>';
+    if(p.health_conditions) h+='<div><b>Health:</b> '+esc(p.health_conditions)+'</div>';
+    if(p.family_context) h+='<div><b>Family:</b> '+esc(p.family_context)+'</div>';
+    h+='<h3>What we remember</h3>';
+    if(!r.facts || !r.facts.length){ h+='<div class="note">Nothing stored yet. Paste session notes below to build this up.</div>'; }
+    else h+= r.facts.map(f=>'<div class="hist"><span class="tag">'+esc(f.fact_category)+'</span> '+esc(f.fact_text)+'</div>').join("");
+    h+='<h3>Add session notes (paste from Granola etc.)</h3>';
+    h+='<textarea id="notes_'+id+'" placeholder="Paste your coaching session notes here. I will log them and pull out anything worth remembering about this member."></textarea>';
+    h+='<div class="actions"><button class="primary" onclick="addNotes(\''+id+'\')">Save to memory</button><span id="notesResult_'+id+'" class="note"></span></div>';
+    h+='<h3>Recent check-ins</h3>';
+    if(!r.checkins.length){ h+='<div class="note">None yet.</div>'; }
+    else h+= r.checkins.map(c=>'<div class="hist">'+ new Date(c.submitted_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"numeric"}) +' · '+(c.sessions_count??0)+' sessions, motivation '+(c.motivation_score??"-")+'/10'+(c.flagged_pain?' <span class="tag">pain</span>':'')+(c.flagged_low_motivation?' <span class="tag">low mot</span>':'')+(c.one_win?'<br>Win: '+esc(c.one_win):'')+'</div>').join("");
+    h+='<h3>Interaction history</h3>';
+    if(!r.interactions.length){ h+='<div class="note">Nothing logged yet.</div>'; }
+    else h+= r.interactions.map(x=>'<div class="hist">'+ new Date(x.created_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short"}) +' · <b>'+esc(x.interaction_type)+'</b> ('+esc(x.created_by)+')<br>'+esc((x.content||"").slice(0,240))+'</div>').join("");
+    h+='</div>';
+    box.innerHTML=h;
+  }
+
+  async function addNotes(id){
+    const t=document.getElementById("notes_"+id).value.trim();
+    const out=document.getElementById("notesResult_"+id);
+    if(!t){ flash("Paste some notes first", false); return; }
+    out.textContent="Saving and reading the notes...";
+    const r=await call({action:"add_notes", member_id:id, notes:t});
+    if(r.ok){
+      out.innerHTML = r.extracted.length
+        ? "Saved. Now remembering: " + r.extracted.map(x=>esc(x.category)+" - "+esc(x.fact)).join("; ")
+        : "Saved to history. Nothing new worth storing as a standalone fact.";
+      document.getElementById("notes_"+id).value="";
+      setTimeout(()=>memberDetail(id), 1200);
+    } else { out.textContent=""; flash(r.error||"Error", false); }
+  }
+
+  if(PW){ document.getElementById("pw").value=""; showApp(); }
+</script>
+</body>
+</html>
