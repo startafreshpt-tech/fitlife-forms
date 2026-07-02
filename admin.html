@@ -56,6 +56,14 @@
   .detail h3{font-size:15px; color:var(--green-dark); margin:14px 0 4px;}
   .hist{border-left:2px solid var(--line); padding-left:12px; margin:8px 0; font-size:13px;}
   .tag{display:inline-block; font-size:11px; background:#eee; border-radius:6px; padding:1px 6px; margin-left:6px; color:#555;}
+  .linkrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-bottom:18px;}
+  .tile{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .tile .tiletitle{font-weight:600; color:var(--green-dark); font-size:15px;}
+  .tile .tiledesc{font-size:13px; color:var(--muted); margin:2px 0 12px;}
+  .tile .actions{margin-top:0;}
+  .btnlink{display:inline-block; text-decoration:none; font-size:14px; border-radius:9px; border:1px solid var(--green); background:var(--green); color:#fff; padding:9px 14px; font-weight:600;}
+  .btnlink:hover{background:var(--green-dark);}
+  .section-label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; margin:0 0 8px;}
 </style>
 </head>
 <body>
@@ -77,6 +85,26 @@
       <h1>Coach review</h1>
       <span id="msg"></span>
       <button style="margin-left:auto;" onclick="logout()">Log out</button>
+    </div>
+
+    <p class="section-label">Member forms (share these in Skool)</p>
+    <div class="linkrow">
+      <div class="tile">
+        <div class="tiletitle">Onboarding form</div>
+        <div class="tiledesc">New member welcome and profile. Send this once when someone joins.</div>
+        <div class="actions">
+          <a class="btnlink" href="https://startafreshpt-tech.github.io/fitlife-forms/" target="_blank" rel="noopener">Open</a>
+          <button onclick="copyLink('https://startafreshpt-tech.github.io/fitlife-forms/')">Copy link</button>
+        </div>
+      </div>
+      <div class="tile">
+        <div class="tiletitle">Weekly check-in</div>
+        <div class="tiledesc">The weekly check-in. Pin this in the group every Monday.</div>
+        <div class="actions">
+          <a class="btnlink" href="https://startafreshpt-tech.github.io/fitlife-forms/checkin.html" target="_blank" rel="noopener">Open</a>
+          <button onclick="copyLink('https://startafreshpt-tech.github.io/fitlife-forms/checkin.html')">Copy link</button>
+        </div>
+      </div>
     </div>
 
     <div class="searchpanel">
@@ -107,6 +135,7 @@
     return r.json();
   }
   function flash(text, ok=true){ const m=document.getElementById("msg"); m.textContent=text; m.className= ok?"ok":"err"; setTimeout(()=>{m.className="";}, 2500); }
+  function copyLink(u){ navigator.clipboard.writeText(u).then(()=>flash("Link copied")).catch(()=>flash("Copy failed",false)); }
   function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
   async function login(){
