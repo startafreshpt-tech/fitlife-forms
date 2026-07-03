@@ -102,17 +102,6 @@
       <input type="email" name="email" required />
       <label>Birthday <span class="hint">(optional — we like to mark the day)</span></label>
       <input type="date" name="birthday" />
-      <label>How do you train with us? <span class="req">*</span></label>
-      <div class="types">
-        <label class="type-opt" id="t-studio">
-          <input type="radio" name="member_type" value="studio" required />
-          <strong>In the studio</strong><span>I train in person</span>
-        </label>
-        <label class="type-opt" id="t-online">
-          <input type="radio" name="member_type" value="online" />
-          <strong>Online</strong><span>I train from home</span>
-        </label>
-      </div>
     </section>
 
     <!-- 2. Goals -->
@@ -243,9 +232,8 @@
     msg.className=''; msg.style.display='none';
 
     const first = val('first_name'), last = val('last_name'), email = val('email');
-    const mtype = (document.querySelector('[name="member_type"]:checked')||{}).value;
-    if(!first || !last || !email || !mtype){
-      msg.className='err'; msg.textContent='Please fill in your name, email and how you train with us.';
+    if(!first || !last || !email){
+      msg.className='err'; msg.textContent='Please fill in your name and email.';
       msg.scrollIntoView({behavior:'smooth',block:'center'}); return;
     }
 
@@ -259,7 +247,7 @@
       p_first_name: first,
       p_last_name: last,
       p_email: email,
-      p_member_type: mtype,
+      p_member_type: null,
       p_birthday: val('birthday') || null,
       p_goals: val('goals') || null,
       p_goal_feels_like: val('goal_feels_like') || null,

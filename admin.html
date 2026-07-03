@@ -121,6 +121,7 @@
       <label class="toggle"><input type="checkbox" id="flaggedOnly" onchange="loadQueue()" style="width:auto;" /> Flagged only (pain / low motivation)</label>
       <button style="margin-left:auto;" onclick="loadQueue()">Refresh</button>
     </div>
+    <p class="note" style="margin:-6px 0 14px;">Manual send for now. Edit the reply if you like, hit Copy reply, paste it into an email to the member from whichever address you want, then Mark as done to clear it from the queue.</p>
     <div id="queue"></div>
   </div>
 
@@ -185,15 +186,15 @@
       + '<textarea id="ta_'+c.id+'">'+esc(draft)+'</textarea>'
       + '<div class="actions">'
       + '<button onclick="saveEdit(\''+c.id+'\')">Save edit</button>'
-      + '<button class="primary" onclick="approve(\''+c.id+'\',false)">Approve</button>'
-      + '<button class="gold" onclick="approve(\''+c.id+'\',true)">Approve &amp; send now</button>'
-      + '<span class="timebox"><span>'+whenText(c.send_scheduled_at)+'</span>'
-      + '<input type="datetime-local" id="dt_'+c.id+'" value="'+localInput(c.send_scheduled_at)+'" />'
-      + '<button onclick="setTime(\''+c.id+'\')">Set</button></span>'
+      + '<button class="primary" onclick="copyReply(\''+c.id+'\')">Copy reply</button>'
+      + '<button class="gold" onclick="markDone(\''+c.id+'\')">Mark as done</button>'
+      + '<span class="timebox">AI suggested time: '+whenText(c.send_scheduled_at)+'</span>'
       + '</div></div>';
   }
 
   async function saveEdit(id){ const text=document.getElementById("ta_"+id).value; const r=await call({action:"save_edit", checkin_id:id, text}); if(r.ok){flash("Saved");} else flash(r.error||"Error",false); }
+  async function copyReply(id){ const t=document.getElementById("ta_"+id).value; try{ await navigator.clipboard.writeText(t); flash("Reply copied. Paste it into your email."); }catch(e){ flash("Copy failed",false); } }
+  async function markDone(id){ const text=document.getElementById("ta_"+id).value; await call({action:"save_edit", checkin_id:id, text}); const r=await call({action:"mark_sent", checkin_id:id}); if(r.ok){ flash("Marked as done"); loadQueue(); } else flash(r.error||"Error",false); }
   async function approve(id, sendNow){ const text=document.getElementById("ta_"+id).value; await call({action:"save_edit", checkin_id:id, text}); const r=await call({action:"approve", checkin_id:id, sendNow}); if(r.ok){flash(sendNow?"Approved, queued to send now":"Approved"); loadQueue();} else flash(r.error||"Error",false); }
   async function setTime(id){ const v=document.getElementById("dt_"+id).value; if(!v){flash("Pick a time",false);return;} const iso=new Date(v).toISOString(); const r=await call({action:"set_time", checkin_id:id, send_at:iso}); if(r.ok){flash("Send time updated"); loadQueue();} else flash(r.error||"Error",false); }
 
@@ -214,7 +215,13 @@
     const m=r.member||{}, p=r.profile||{};
     let h='<div class="detail card" style="margin-top:12px;">';
     h+='<div class="memname">'+esc((m.first_name||"")+" "+(m.last_name||""))+'</div>';
-    h+='<div class="meta">'+esc(m.email||"")+' · joined '+esc(m.join_date||"-")+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+') · '+esc(m.member_type||"-")+'</div>';
+    h+='<div class="meta">'+esc(m.email||"")+' · joined '+esc(m.join_date||"-")+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+')</div>';
+    h+='<h3>How they train</h3>';
+    h+='<div class="actions"><select id="mtype_'+id+'" style="width:auto; font-size:14px; padding:9px 11px; border:1px solid var(--line); border-radius:9px;">'
+      +'<option value=""'+(!m.member_type?' selected':'')+'>Not set</option>'
+      +'<option value="studio"'+(m.member_type==="studio"?' selected':'')+'>In the studio</option>'
+      +'<option value="online"'+(m.member_type==="online"?' selected':'')+'>Online</option>'
+      +'</select><button onclick="setMemberType(\''+id+'\')">Save</button></div>';
     h+='<h3>Their why and goals</h3>';
     h+='<div><b>Goals:</b> '+esc(p.goals||"-")+'</div>';
     h+='<div><b>Why it matters:</b> '+esc(p.why_it_matters||"-")+'</div>';
@@ -236,6 +243,8 @@
     h+='</div>';
     box.innerHTML=h;
   }
+
+  async function setMemberType(id){ const v=document.getElementById("mtype_"+id).value; const r=await call({action:"update_member", member_id:id, member_type:v}); if(r.ok){ flash("Saved"); memberDetail(id); } else flash(r.error||"Error",false); }
 
   async function addNotes(id){
     const t=document.getElementById("notes_"+id).value.trim();
