@@ -208,6 +208,9 @@
     box.innerHTML = r.members.map(m=>'<div class="searchresult" onclick="memberDetail(\''+m.id+'\')"><b>'+esc((m.first_name||"")+" "+(m.last_name||""))+'</b> · '+esc(m.email||"")+' <span class="tag">'+(m.current_streak??0)+'wk</span> <span class="tag">'+esc(m.member_type||"")+'</span></div>').join("");
   }
 
+  function detailRow(label, val){ if(val==null||val==='') return ''; return '<div style="margin-bottom:6px;"><b>'+esc(label)+':</b> '+esc(String(val)).replace(/\n/g,"<br>")+'</div>'; }
+  function nlbr(s){ return esc(s||"").replace(/\n/g,"<br>"); }
+
   async function memberDetail(id){
     const r=await call({action:"member_detail", member_id:id});
     const box=document.getElementById("memberDetail");
@@ -215,34 +218,69 @@
     const m=r.member||{}, p=r.profile||{};
     let h='<div class="detail card" style="margin-top:12px;">';
     h+='<div class="memname">'+esc((m.first_name||"")+" "+(m.last_name||""))+'</div>';
-    h+='<div class="meta">'+esc(m.email||"")+' · joined '+esc(m.join_date||"-")+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+')</div>';
+    h+='<div class="meta">'+esc(m.email||"")+' · joined '+esc(m.join_date||"-")+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+') · status '+esc(m.status||"active")+'</div>';
+
     h+='<h3>How they train</h3>';
     h+='<div class="actions"><select id="mtype_'+id+'" style="width:auto; font-size:14px; padding:9px 11px; border:1px solid var(--line); border-radius:9px;">'
       +'<option value=""'+(!m.member_type?' selected':'')+'>Not set</option>'
       +'<option value="studio"'+(m.member_type==="studio"?' selected':'')+'>In the studio</option>'
       +'<option value="online"'+(m.member_type==="online"?' selected':'')+'>Online</option>'
       +'</select><button onclick="setMemberType(\''+id+'\')">Save</button></div>';
-    h+='<h3>Their why and goals</h3>';
-    h+='<div><b>Goals:</b> '+esc(p.goals||"-")+'</div>';
-    h+='<div><b>Why it matters:</b> '+esc(p.why_it_matters||"-")+'</div>';
-    h+='<div><b>Accountability statement:</b> '+esc(p.accountability_statement||"-")+'</div>';
-    if(p.health_conditions) h+='<div><b>Health:</b> '+esc(p.health_conditions)+'</div>';
-    if(p.family_context) h+='<div><b>Family:</b> '+esc(p.family_context)+'</div>';
+
+    h+='<h3>Welcome email</h3>';
+    if(m.welcome_draft){
+      h+='<textarea id="welcome_'+id+'" style="min-height:150px;">'+esc(m.welcome_draft)+'</textarea>';
+      h+='<div class="actions"><button class="primary" onclick="copyWelcome(\''+id+'\')">Copy welcome</button>';
+      h+= m.welcome_sent ? '<span class="pill streak">sent</span>' : '<button class="gold" onclick="markWelcomeSent(\''+id+'\')">Mark as sent</button>';
+      h+='</div>';
+    } else {
+      h+='<div class="note">Being written now. Refresh in a few seconds if this member just signed up.</div>';
+    }
+
+    h+='<h3>Onboarding answers</h3>';
+    h+= detailRow('Goals', p.goals) + detailRow('What success looks and feels like', p.goal_feels_like)
+      + detailRow('Why it matters', p.why_it_matters) + detailRow('What has stopped them before', p.limiting_beliefs)
+      + detailRow('Accountability statement', p.accountability_statement) + detailRow('Training commitment', p.training_days)
+      + detailRow('Importance', p.importance_score!=null ? (p.importance_score+'/10') : null)
+      + detailRow('Family', p.family_context) + detailRow('Health', p.health_conditions);
+    if(!p || Object.keys(p).length===0) h+='<div class="note">No onboarding on file for this member.</div>';
+
     h+='<h3>What we remember</h3>';
     if(!r.facts || !r.facts.length){ h+='<div class="note">Nothing stored yet. Paste session notes below to build this up.</div>'; }
     else h+= r.facts.map(f=>'<div class="hist"><span class="tag">'+esc(f.fact_category)+'</span> '+esc(f.fact_text)+'</div>').join("");
+
     h+='<h3>Add session notes (paste from Granola etc.)</h3>';
     h+='<textarea id="notes_'+id+'" placeholder="Paste your coaching session notes here. I will log them and pull out anything worth remembering about this member."></textarea>';
     h+='<div class="actions"><button class="primary" onclick="addNotes(\''+id+'\')">Save to memory</button><span id="notesResult_'+id+'" class="note"></span></div>';
-    h+='<h3>Recent check-ins</h3>';
-    if(!r.checkins.length){ h+='<div class="note">None yet.</div>'; }
-    else h+= r.checkins.map(c=>'<div class="hist">'+ new Date(c.submitted_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"numeric"}) +' · '+(c.sessions_count??0)+' sessions, motivation '+(c.motivation_score??"-")+'/10'+(c.flagged_pain?' <span class="tag">pain</span>':'')+(c.flagged_low_motivation?' <span class="tag">low mot</span>':'')+(c.one_win?'<br>Win: '+esc(c.one_win):'')+'</div>').join("");
-    h+='<h3>Interaction history</h3>';
-    if(!r.interactions.length){ h+='<div class="note">Nothing logged yet.</div>'; }
-    else h+= r.interactions.map(x=>'<div class="hist">'+ new Date(x.created_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short"}) +' · <b>'+esc(x.interaction_type)+'</b> ('+esc(x.created_by)+')<br>'+esc((x.content||"").slice(0,240))+'</div>').join("");
+
+    h+='<h3>Check-ins and replies ('+r.checkins.length+')</h3>';
+    if(!r.checkins.length){ h+='<div class="note">No check-ins yet.</div>'; }
+    else h+= r.checkins.map(c=>{
+      const d=new Date(c.submitted_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"numeric"});
+      let ci='<div class="checkin"><div><b>'+d+'</b>'+(c.flagged_pain?' <span class="pill pain">pain</span>':'')+(c.flagged_low_motivation?' <span class="pill mot">low mot</span>':'')+' <span class="pill status">'+esc(c.response_status||"")+'</span></div>';
+      ci+='<div class="scores">'+(c.sessions_count??0)+' sessions · body '+(c.body_feeling??"-")+' · energy '+(c.energy_level??"-")+' · sleep '+(c.sleep_quality??"-")+' · motivation '+(c.motivation_score??"-")+'</div>';
+      if(c.one_win) ci+='<div><b>Win:</b> '+esc(c.one_win)+'</div>';
+      if(c.one_struggle) ci+='<div><b>Struggle:</b> '+esc(c.one_struggle)+'</div>';
+      if(c.pain_mentioned) ci+='<div><b>Pain:</b> '+esc(c.pain_mentioned)+'</div>';
+      if(c.needs_help) ci+='<div><b>Needs help:</b> '+esc(c.needs_help)+'</div>';
+      const reply=c.final_response||c.ai_draft_response;
+      if(reply) ci+='<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--line);"><b>Reply '+(c.sent_at?"(sent)":"(draft)")+':</b><br>'+nlbr(reply)+'</div>';
+      ci+='</div>';
+      return ci;
+    }).join("");
+
+    const other=(r.interactions||[]).filter(x=>x.interaction_type!=='checkin_response');
+    if(other.length){
+      h+='<h3>Notes and activity</h3>';
+      h+= other.map(x=>'<div class="hist">'+ new Date(x.created_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short"}) +' · <b>'+esc(x.interaction_type)+'</b> ('+esc(x.created_by)+')<br>'+esc((x.content||"").slice(0,300))+'</div>').join("");
+    }
+
     h+='</div>';
     box.innerHTML=h;
   }
+
+  async function copyWelcome(id){ const t=document.getElementById("welcome_"+id).value; try{ await navigator.clipboard.writeText(t); flash("Welcome email copied. Paste it into an email to them."); }catch(e){ flash("Copy failed",false); } }
+  async function markWelcomeSent(id){ const r=await call({action:"mark_welcome_sent", member_id:id}); if(r.ok){ flash("Welcome marked as sent"); memberDetail(id); } else flash(r.error||"Error",false); }
 
   async function setMemberType(id){ const v=document.getElementById("mtype_"+id).value; const r=await call({action:"update_member", member_id:id, member_type:v}); if(r.ok){ flash("Saved"); memberDetail(id); } else flash(r.error||"Error",false); }
 
