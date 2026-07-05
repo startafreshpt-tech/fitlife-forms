@@ -3,17 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fit Life After 40 — Review</title>
+<title>Fit Life After 40 — Coach</title>
 <style>
   :root{ --ink:#1c2b27; --muted:#5d6b66; --line:#dfe4e1; --bg:#f4f1ea; --card:#fff;
     --green:#1f6f54; --green-dark:#164f3d; --green-soft:#e8f1ec; --gold:#c2792b; --gold-soft:#f7ecdc;
-    --red:#9a2b1e; --red-soft:#fde8e6; }
+    --red:#9a2b1e; --red-soft:#fde8e6; --side:#173c30; }
   *{box-sizing:border-box;}
   body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55;}
-  .wrap{max-width:920px; margin:0 auto; padding:24px 18px 80px;}
-  h1{font-size:22px; color:var(--green-dark); margin:0;}
-  .topbar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
-  .badge-brand{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); background:var(--green-soft); padding:5px 12px; border-radius:999px; font-weight:600;}
   button{font-family:inherit; font-size:14px; border-radius:9px; border:1px solid var(--line); background:#fff; padding:9px 14px; cursor:pointer; transition:.12s;}
   button:hover{border-color:var(--green);}
   button.primary{background:var(--green); color:#fff; border-color:var(--green); font-weight:600;}
@@ -22,12 +18,40 @@
   input, textarea{font-family:inherit; font-size:14px; border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%; color:var(--ink); background:#fff;}
   input:focus, textarea:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px var(--green-soft);}
   textarea{min-height:150px; resize:vertical; line-height:1.6;}
-  .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;}
-  .toggle{display:flex; align-items:center; gap:7px; font-size:14px; color:var(--muted);}
+  h3{font-size:15px; color:var(--green-dark); margin:16px 0 6px;}
+
+  /* Login */
+  #login{max-width:360px; margin:80px auto; text-align:center;}
+  .badge-brand{display:inline-block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); background:var(--green-soft); padding:5px 12px; border-radius:999px; font-weight:600;}
+  #login .card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:28px; margin-top:14px;}
+  .note{font-size:12px; color:var(--muted); margin-top:8px;}
+
+  /* Layout */
+  .layout{display:flex; min-height:100vh;}
+  .side{width:210px; flex-shrink:0; background:var(--side); color:#dfeee7; padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
+  .side .brand{font-weight:700; color:#fff; padding:0 20px 6px; font-size:15px;}
+  .side .brandsub{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#8fc3ad; padding:0 20px 16px;}
+  .navitem{display:block; padding:11px 20px; color:#cfe6dc; cursor:pointer; font-size:14.5px; border-left:3px solid transparent; text-decoration:none;}
+  .navitem:hover{background:rgba(255,255,255,.06); color:#fff;}
+  .navitem.active{background:rgba(255,255,255,.10); color:#fff; border-left-color:var(--gold); font-weight:600;}
+  .navsec{font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#7fb39d; padding:18px 20px 6px;}
+  .navitem.sub{font-size:13.5px; color:#b9dccd;}
+  .side .foot{margin-top:auto; padding:14px 20px 0;}
+  .side .foot button{width:100%; background:transparent; color:#cfe6dc; border-color:#3c5f52;}
+  .side .foot button:hover{background:rgba(255,255,255,.06);}
+
+  .content{flex:1; padding:24px 26px 80px; min-width:0;}
+  .topline{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .topline h1{font-size:20px; color:var(--green-dark); margin:0;}
+  #msg{font-size:13px; padding:6px 12px; border-radius:8px; display:none;}
+  #msg.ok{display:inline-block; background:var(--green-soft); color:var(--green-dark);}
+  #msg.err{display:inline-block; background:var(--red-soft); color:var(--red);}
+
+  /* Cards / bits */
   .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:16px;}
   .card.flag{border-color:#e6b8a8; box-shadow:inset 3px 0 0 var(--gold);}
   .memhead{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
-  .memname{font-size:17px; font-weight:600; color:var(--green-dark);}
+  .memname{font-size:18px; font-weight:600; color:var(--green-dark);}
   .pill{font-size:12px; padding:3px 9px; border-radius:999px; font-weight:600;}
   .pill.streak{background:var(--green-soft); color:var(--green-dark);}
   .pill.type{background:#eee; color:#555;}
@@ -35,109 +59,77 @@
   .pill.mot{background:var(--gold-soft); color:#6b4a1e;}
   .pill.status{background:#eef; color:#334;}
   .meta{font-size:12px; color:var(--muted); margin-top:2px;}
-  .checkin{background:#faf8f3; border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:14px 0; font-size:13.5px;}
+  .checkin{background:#faf8f3; border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:12px 0; font-size:13.5px;}
   .checkin b{color:var(--green-dark);}
-  .scores{display:flex; gap:14px; flex-wrap:wrap; margin:6px 0; font-size:13px; color:var(--muted);}
-  .label{font-size:12px; color:var(--muted); margin:12px 0 5px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
+  .scores{font-size:13px; color:var(--muted); margin:4px 0;}
   .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center;}
-  .timebox{display:flex; gap:6px; align-items:center; margin-left:auto; font-size:13px; color:var(--muted);}
-  .timebox input{width:auto;}
+  .timebox{font-size:13px; color:var(--muted);}
   .empty{text-align:center; color:var(--muted); padding:40px; background:#fff; border:1px dashed var(--line); border-radius:14px;}
-  #login{max-width:360px; margin:80px auto; text-align:center;}
-  #login .card{padding:28px;}
-  .note{font-size:12px; color:var(--muted); margin-top:8px;}
-  #msg{font-size:13px; padding:8px 12px; border-radius:8px; margin-left:8px; display:none;}
-  #msg.ok{display:inline-block; background:var(--green-soft); color:var(--green-dark);}
-  #msg.err{display:inline-block; background:var(--red-soft); color:var(--red);}
-  .searchpanel{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:18px;}
-  .searchresult{padding:8px 10px; border:1px solid var(--line); border-radius:8px; margin-top:8px; cursor:pointer; font-size:14px;}
-  .searchresult:hover{border-color:var(--green); background:var(--green-soft);}
-  .detail{font-size:13.5px;}
-  .detail h3{font-size:15px; color:var(--green-dark); margin:14px 0 4px;}
+  .toggle{display:flex; align-items:center; gap:7px; font-size:14px; color:var(--muted);}
   .hist{border-left:2px solid var(--line); padding-left:12px; margin:8px 0; font-size:13px;}
   .tag{display:inline-block; font-size:11px; background:#eee; border-radius:6px; padding:1px 6px; margin-left:6px; color:#555;}
-  .linkrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-bottom:18px;}
-  .tile{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
-  .tile .tiletitle{font-weight:600; color:var(--green-dark); font-size:15px;}
-  .tile .tiledesc{font-size:13px; color:var(--muted); margin:2px 0 12px;}
-  .tile .actions{margin-top:0;}
-  .btnlink{display:inline-block; text-decoration:none; font-size:14px; border-radius:9px; border:1px solid var(--green); background:var(--green); color:#fff; padding:9px 14px; font-weight:600;}
-  .btnlink:hover{background:var(--green-dark);}
-  .section-label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; margin:0 0 8px;}
+  .label{font-size:12px; color:var(--muted); margin:12px 0 5px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
+  .backlink{display:inline-block; font-size:13px; color:var(--green); cursor:pointer; margin-bottom:10px;}
+  .backlink:hover{text-decoration:underline;}
+
+  /* Members table */
+  table.members{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:14px;}
+  table.members th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--line); background:#faf8f3;}
+  table.members td{padding:11px 12px; border-bottom:1px solid var(--line);}
+  table.members tr{cursor:pointer;}
+  table.members tbody tr:hover{background:var(--green-soft);}
+  table.members tr:last-child td{border-bottom:none;}
+  .yes{color:var(--green-dark); font-weight:600;}
+  .no{color:var(--muted);}
+  .num{font-weight:600; color:var(--green-dark);}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div id="login">
-    <span class="badge-brand">Fit Life After 40</span>
-    <div class="card">
-      <h1 style="margin-bottom:14px;">Coach review</h1>
-      <input type="password" id="pw" placeholder="Admin password" />
-      <button class="primary" style="width:100%; margin-top:12px;" onclick="login()">Log in</button>
-      <div class="note" id="loginNote"></div>
-    </div>
+<div id="login">
+  <span class="badge-brand">Fit Life After 40</span>
+  <div class="card">
+    <h1 style="margin:0 0 14px; color:var(--green-dark); font-size:20px;">Coach login</h1>
+    <input type="password" id="pw" placeholder="Admin password" />
+    <button class="primary" style="width:100%; margin-top:12px;" onclick="login()">Log in</button>
+    <div class="note" id="loginNote"></div>
   </div>
+</div>
 
-  <div id="app" style="display:none;">
-    <div class="topbar">
-      <span class="badge-brand">Fit Life After 40</span>
-      <h1>Coach review</h1>
-      <span id="msg"></span>
-      <button style="margin-left:auto;" onclick="logout()">Log out</button>
-    </div>
-
-    <p class="section-label">Member forms (share these in Skool)</p>
-    <div class="linkrow">
-      <div class="tile">
-        <div class="tiletitle">Onboarding form</div>
-        <div class="tiledesc">New member welcome and profile. Send this once when someone joins.</div>
-        <div class="actions">
-          <a class="btnlink" href="https://startafreshpt-tech.github.io/fitlife-forms/" target="_blank" rel="noopener">Open</a>
-          <button onclick="copyLink('https://startafreshpt-tech.github.io/fitlife-forms/')">Copy link</button>
-        </div>
-      </div>
-      <div class="tile">
-        <div class="tiletitle">Weekly check-in</div>
-        <div class="tiledesc">The weekly check-in. Pin this in the group every Monday.</div>
-        <div class="actions">
-          <a class="btnlink" href="https://startafreshpt-tech.github.io/fitlife-forms/checkin.html" target="_blank" rel="noopener">Open</a>
-          <button onclick="copyLink('https://startafreshpt-tech.github.io/fitlife-forms/checkin.html')">Copy link</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="searchpanel">
-      <div class="controls" style="margin:0;">
-        <input type="text" id="searchQ" placeholder="Search a member by name or email" style="flex:1; min-width:200px;" onkeydown="if(event.key==='Enter')doSearch()" />
-        <button onclick="doSearch()">Search</button>
-      </div>
-      <div id="searchResults"></div>
-      <div id="memberDetail"></div>
-    </div>
-
-    <div class="controls">
-      <strong style="font-size:16px; color:var(--green-dark);">Pending queue</strong>
-      <label class="toggle"><input type="checkbox" id="flaggedOnly" onchange="loadQueue()" style="width:auto;" /> Flagged only (pain / low motivation)</label>
-      <button style="margin-left:auto;" onclick="loadQueue()">Refresh</button>
-    </div>
-    <p class="note" style="margin:-6px 0 14px;">Manual send for now. Edit the reply if you like, hit Copy reply, paste it into an email to the member from whichever address you want, then Mark as done to clear it from the queue.</p>
-    <div id="queue"></div>
+<div id="app" style="display:none;">
+  <div class="layout">
+    <aside class="side">
+      <div class="brand">Fit Life After 40</div>
+      <div class="brandsub">Coach</div>
+      <a class="navitem" id="nav-queue" onclick="showView('queue')">Review queue</a>
+      <a class="navitem" id="nav-members" onclick="showView('members')">Members</a>
+      <div class="navsec">Member forms</div>
+      <a class="navitem sub" href="https://startafreshpt-tech.github.io/fitlife-forms/" target="_blank" rel="noopener">Onboarding form</a>
+      <a class="navitem sub" href="https://startafreshpt-tech.github.io/fitlife-forms/checkin.html" target="_blank" rel="noopener">Weekly check-in</a>
+      <div class="foot"><button onclick="logout()">Log out</button></div>
+    </aside>
+    <main class="content">
+      <div class="topline"><h1 id="viewTitle">Review queue</h1><span id="msg"></span></div>
+      <div id="view"></div>
+    </main>
   </div>
-
 </div>
 
 <script>
   const API = "https://eqevyohstkwqslloqsni.supabase.co/functions/v1/admin-api";
+  const ONBOARD_URL = "https://startafreshpt-tech.github.io/fitlife-forms/";
+  const CHECKIN_URL = "https://startafreshpt-tech.github.io/fitlife-forms/checkin.html";
   let PW = sessionStorage.getItem("fl_admin_pw") || "";
+  let MEMBERS = [];
 
   async function call(payload){
     const r = await fetch(API, { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ password: PW, ...payload }) });
     return r.json();
   }
-  function flash(text, ok=true){ const m=document.getElementById("msg"); m.textContent=text; m.className= ok?"ok":"err"; setTimeout(()=>{m.className="";}, 2500); }
-  function copyLink(u){ navigator.clipboard.writeText(u).then(()=>flash("Link copied")).catch(()=>flash("Copy failed",false)); }
+  function flash(text, ok=true){ const m=document.getElementById("msg"); m.textContent=text; m.className= ok?"ok":"err"; setTimeout(()=>{m.className="";}, 2600); }
   function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function nlbr(s){ return esc(s||"").replace(/\n/g,"<br>"); }
+  function dstr(v){ return v ? new Date(v).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"numeric"}) : "-"; }
 
   async function login(){
     PW = document.getElementById("pw").value;
@@ -146,28 +138,35 @@
     else { document.getElementById("loginNote").textContent = res.error==="unauthorized" ? "Wrong password." : (res.error||"Could not log in."); }
   }
   function logout(){ sessionStorage.removeItem("fl_admin_pw"); PW=""; location.reload(); }
-  function showApp(){ document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; loadQueue(); }
+  function showApp(){ document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; showView("queue"); }
 
-  function localInput(iso){ if(!iso) return ""; const d=new Date(iso); const p=n=>String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes()); }
-  function whenText(iso){ if(!iso) return "no send time set"; const d=new Date(iso); const now=new Date(); const diff=(d-now)/60000; const t=d.toLocaleString("en-NZ",{weekday:"short",hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"}); return diff>0 ? ("sends "+t) : ("was due "+t); }
-  function flagsHtml(c){ let h=""; if(c.flagged_pain) h+='<span class="pill pain">pain</span> '; if(c.flagged_low_motivation) h+='<span class="pill mot">low motivation</span> '; return h; }
-
-  async function loadQueue(){
-    const q = document.getElementById("queue");
-    q.innerHTML = '<div class="empty">Loading...</div>';
-    const flaggedOnly = document.getElementById("flaggedOnly").checked;
-    const res = await call({ action:"pending", flaggedOnly });
-    if(!res.ok){ q.innerHTML = '<div class="empty">'+esc(res.error||"Error loading")+'</div>'; return; }
-    if(!res.items.length){ q.innerHTML = '<div class="empty">Nothing waiting. All caught up. 👊</div>'; return; }
-    q.innerHTML = res.items.map(renderCard).join("");
+  function setActive(name){ document.querySelectorAll(".navitem").forEach(n=>n.classList.remove("active")); const el=document.getElementById("nav-"+name); if(el) el.classList.add("active"); }
+  function showView(name){
+    if(name==="queue"){ setActive("queue"); document.getElementById("viewTitle").textContent="Review queue"; loadQueue(); }
+    else if(name==="members"){ setActive("members"); document.getElementById("viewTitle").textContent="Members"; loadMembers(); }
   }
 
+  /* ---------------- Review queue ---------------- */
+  async function loadQueue(){
+    const view=document.getElementById("view");
+    view.innerHTML = '<div style="display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">'
+      + '<label class="toggle"><input type="checkbox" id="flaggedOnly" style="width:auto;" onchange="loadQueue()"'+(window._flagged?" checked":"")+'/> Flagged only (pain / low motivation)</label>'
+      + '<button style="margin-left:auto;" onclick="loadQueue()">Refresh</button></div>'
+      + '<p class="note" style="margin:0 0 14px;">Edit the reply if you like, hit Copy reply, paste it into an email to the member, then Mark as done.</p>'
+      + '<div id="queue"><div class="empty">Loading...</div></div>';
+    const flaggedOnly = document.getElementById("flaggedOnly").checked; window._flagged=flaggedOnly;
+    const res = await call({ action:"pending", flaggedOnly });
+    const q=document.getElementById("queue");
+    if(!res.ok){ q.innerHTML='<div class="empty">'+esc(res.error||"Error")+'</div>'; return; }
+    if(!res.items.length){ q.innerHTML='<div class="empty">Nothing waiting. All caught up. 👊</div>'; return; }
+    q.innerHTML = res.items.map(renderCard).join("");
+  }
+  function whenText(iso){ if(!iso) return "no time set"; const d=new Date(iso); const t=d.toLocaleString("en-NZ",{weekday:"short",hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"}); return (d-new Date()>0?"suggested "+t:"was "+t); }
   function renderCard(c){
-    const m = c.members || {};
-    const name = esc((m.first_name||"")+" "+(m.last_name||"")).trim() || "Member";
-    const draft = c.final_response || c.ai_draft_response || "";
-    const scores = 'Trained: <b>'+esc(c.trained_this_week||"-")+'</b> ('+(c.sessions_count??0)+' sessions) &nbsp;·&nbsp; Body '+ (c.body_feeling??"-") +' &nbsp; Energy '+ (c.energy_level??"-") +' &nbsp; Sleep '+ (c.sleep_quality??"-") +' &nbsp; Motivation '+ (c.motivation_score??"-");
-    const bits = [];
+    const m=c.members||{}; const name=esc((m.first_name||"")+" "+(m.last_name||"")).trim()||"Member";
+    const draft=c.final_response||c.ai_draft_response||"";
+    let flags=""; if(c.flagged_pain) flags+='<span class="pill pain">pain</span> '; if(c.flagged_low_motivation) flags+='<span class="pill mot">low motivation</span> ';
+    const bits=[];
     if(c.weekly_goal_reflection) bits.push('<div><b>Their goals:</b> '+esc(c.weekly_goal_reflection)+'</div>');
     if(c.pain_mentioned) bits.push('<div><b>Pain:</b> '+esc(c.pain_mentioned)+'</div>');
     if(c.one_win) bits.push('<div><b>Win:</b> '+esc(c.one_win)+'</div>');
@@ -175,50 +174,65 @@
     if(c.needs_help) bits.push('<div><b>Needs help:</b> '+esc(c.needs_help)+'</div>');
     return '<div class="card '+(c.flagged_for_review?"flag":"")+'">'
       + '<div class="memhead"><span class="memname">'+name+'</span>'
-      + '<span class="pill streak">'+(m.current_streak??0)+'wk streak</span>'
-      + '<span class="pill type">'+esc(m.member_type||"-")+'</span> '
-      + flagsHtml(c)
-      + '<span class="pill status">'+esc(c.response_status)+'</span>'
-      + '</div>'
+      + '<span class="pill streak">'+(m.current_streak??0)+'wk</span> '+flags+'<span class="pill status">'+esc(c.response_status)+'</span></div>'
       + '<div class="meta">'+esc(m.email||"")+' · checked in '+ new Date(c.submitted_at).toLocaleString("en-NZ",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) +'</div>'
-      + '<div class="checkin"><div class="scores">'+scores+'</div>'+ bits.join("") +'</div>'
+      + '<div class="checkin"><div class="scores">'+(c.sessions_count??0)+' sessions · body '+(c.body_feeling??"-")+' · energy '+(c.energy_level??"-")+' · sleep '+(c.sleep_quality??"-")+' · motivation '+(c.motivation_score??"-")+'</div>'+bits.join("")+'</div>'
       + '<div class="label">Draft reply (edit if you like)</div>'
       + '<textarea id="ta_'+c.id+'">'+esc(draft)+'</textarea>'
-      + '<div class="actions">'
-      + '<button onclick="saveEdit(\''+c.id+'\')">Save edit</button>'
+      + '<div class="actions"><button onclick="saveEdit(\''+c.id+'\')">Save edit</button>'
       + '<button class="primary" onclick="copyReply(\''+c.id+'\')">Copy reply</button>'
       + '<button class="gold" onclick="markDone(\''+c.id+'\')">Mark as done</button>'
-      + '<span class="timebox">AI suggested time: '+whenText(c.send_scheduled_at)+'</span>'
-      + '</div></div>';
+      + '<span class="timebox">AI suggested time: '+whenText(c.send_scheduled_at)+'</span></div></div>';
   }
-
   async function saveEdit(id){ const text=document.getElementById("ta_"+id).value; const r=await call({action:"save_edit", checkin_id:id, text}); if(r.ok){flash("Saved");} else flash(r.error||"Error",false); }
   async function copyReply(id){ const t=document.getElementById("ta_"+id).value; try{ await navigator.clipboard.writeText(t); flash("Reply copied. Paste it into your email."); }catch(e){ flash("Copy failed",false); } }
   async function markDone(id){ const text=document.getElementById("ta_"+id).value; await call({action:"save_edit", checkin_id:id, text}); const r=await call({action:"mark_sent", checkin_id:id}); if(r.ok){ flash("Marked as done"); loadQueue(); } else flash(r.error||"Error",false); }
-  async function approve(id, sendNow){ const text=document.getElementById("ta_"+id).value; await call({action:"save_edit", checkin_id:id, text}); const r=await call({action:"approve", checkin_id:id, sendNow}); if(r.ok){flash(sendNow?"Approved, queued to send now":"Approved"); loadQueue();} else flash(r.error||"Error",false); }
-  async function setTime(id){ const v=document.getElementById("dt_"+id).value; if(!v){flash("Pick a time",false);return;} const iso=new Date(v).toISOString(); const r=await call({action:"set_time", checkin_id:id, send_at:iso}); if(r.ok){flash("Send time updated"); loadQueue();} else flash(r.error||"Error",false); }
 
-  async function doSearch(){
-    const q=document.getElementById("searchQ").value.trim();
-    const box=document.getElementById("searchResults"); document.getElementById("memberDetail").innerHTML="";
-    if(!q){ box.innerHTML=""; return; }
-    const r=await call({action:"search", q});
-    if(!r.ok){ box.innerHTML='<div class="note">'+esc(r.error||"Error")+'</div>'; return; }
-    if(!r.members.length){ box.innerHTML='<div class="note">No members found.</div>'; return; }
-    box.innerHTML = r.members.map(m=>'<div class="searchresult" onclick="memberDetail(\''+m.id+'\')"><b>'+esc((m.first_name||"")+" "+(m.last_name||""))+'</b> · '+esc(m.email||"")+' <span class="tag">'+(m.current_streak??0)+'wk</span> <span class="tag">'+esc(m.member_type||"")+'</span></div>').join("");
+  /* ---------------- Members list ---------------- */
+  async function loadMembers(){
+    const view=document.getElementById("view");
+    view.innerHTML='<div class="empty">Loading members...</div>';
+    const r=await call({action:"list_members"});
+    if(!r.ok){ view.innerHTML='<div class="empty">'+esc(r.error||"Error")+'</div>'; return; }
+    MEMBERS=r.members||[];
+    view.innerHTML='<div style="display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">'
+      + '<input type="text" id="memFilter" placeholder="Filter by name or email" style="max-width:320px;" oninput="renderMembers()" />'
+      + '<span class="note" style="margin:0;">'+MEMBERS.length+' member'+(MEMBERS.length===1?"":"s")+'</span>'
+      + '<button style="margin-left:auto;" onclick="loadMembers()">Refresh</button></div>'
+      + '<div id="memTable"></div>';
+    renderMembers();
+  }
+  function renderMembers(){
+    const f=(document.getElementById("memFilter")?.value||"").toLowerCase().trim();
+    let list=MEMBERS;
+    if(f) list=MEMBERS.filter(m=>((m.first_name||"")+" "+(m.last_name||"")+" "+(m.email||"")).toLowerCase().includes(f));
+    const box=document.getElementById("memTable");
+    if(!list.length){ box.innerHTML='<div class="empty">No members'+(f?" match that":" yet")+'.</div>'; return; }
+    let h='<table class="members"><thead><tr><th>Name</th><th>Onboarded</th><th>Check-ins</th><th>Replies sent</th><th>Last check-in</th><th>Streak</th><th>Welcome</th></tr></thead><tbody>';
+    h+= list.map(m=>'<tr onclick="openMember(\''+m.id+'\')">'
+      + '<td><b>'+esc((m.first_name||"")+" "+(m.last_name||""))+'</b><div class="note" style="margin:0;">'+esc(m.email||"")+'</div></td>'
+      + '<td>'+(m.onboarded?'<span class="yes">Yes</span>':'<span class="no">No</span>')+'</td>'
+      + '<td><span class="num">'+(m.checkin_count||0)+'</span></td>'
+      + '<td>'+(m.replied_count||0)+'</td>'
+      + '<td>'+dstr(m.last_checkin_date)+'</td>'
+      + '<td>'+(m.current_streak??0)+'wk</td>'
+      + '<td>'+(m.welcome_sent?'<span class="yes">sent</span>':'<span class="no">-</span>')+'</td>'
+      + '</tr>').join("");
+    h+='</tbody></table>';
+    box.innerHTML=h;
   }
 
-  function detailRow(label, val){ if(val==null||val==='') return ''; return '<div style="margin-bottom:6px;"><b>'+esc(label)+':</b> '+esc(String(val)).replace(/\n/g,"<br>")+'</div>'; }
-  function nlbr(s){ return esc(s||"").replace(/\n/g,"<br>"); }
-
-  async function memberDetail(id){
+  /* ---------------- Member record (CRM) ---------------- */
+  async function openMember(id){
+    document.getElementById("viewTitle").textContent="Member";
     const r=await call({action:"member_detail", member_id:id});
-    const box=document.getElementById("memberDetail");
-    if(!r.ok){ box.innerHTML='<div class="note">'+esc(r.error||"Error")+'</div>'; return; }
+    const view=document.getElementById("view");
+    if(!r.ok){ view.innerHTML='<div class="empty">'+esc(r.error||"Error")+'</div>'; return; }
     const m=r.member||{}, p=r.profile||{};
-    let h='<div class="detail card" style="margin-top:12px;">';
+    let h='<span class="backlink" onclick="showView(\'members\')">&larr; Back to members</span>';
+    h+='<div class="card">';
     h+='<div class="memname">'+esc((m.first_name||"")+" "+(m.last_name||""))+'</div>';
-    h+='<div class="meta">'+esc(m.email||"")+' · joined '+esc(m.join_date||"-")+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+') · status '+esc(m.status||"active")+'</div>';
+    h+='<div class="meta">'+esc(m.email||"")+' · joined '+dstr(m.join_date)+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+') · status '+esc(m.status||"active")+'</div>';
 
     h+='<h3>How they train</h3>';
     h+='<div class="actions"><select id="mtype_'+id+'" style="width:auto; font-size:14px; padding:9px 11px; border:1px solid var(--line); border-radius:9px;">'
@@ -233,9 +247,7 @@
       h+='<div class="actions"><button class="primary" onclick="copyWelcome(\''+id+'\')">Copy welcome</button>';
       h+= m.welcome_sent ? '<span class="pill streak">sent</span>' : '<button class="gold" onclick="markWelcomeSent(\''+id+'\')">Mark as sent</button>';
       h+='</div>';
-    } else {
-      h+='<div class="note">Being written now. Refresh in a few seconds if this member just signed up.</div>';
-    }
+    } else { h+='<div class="note">Being written now. Refresh in a few seconds if this member just signed up.</div>'; }
 
     h+='<h3>Onboarding answers</h3>';
     h+= detailRow('Goals', p.goals) + detailRow('What success looks and feels like', p.goal_feels_like)
@@ -250,14 +262,13 @@
     else h+= r.facts.map(f=>'<div class="hist"><span class="tag">'+esc(f.fact_category)+'</span> '+esc(f.fact_text)+'</div>').join("");
 
     h+='<h3>Add session notes (paste from Granola etc.)</h3>';
-    h+='<textarea id="notes_'+id+'" placeholder="Paste your coaching session notes here. I will log them and pull out anything worth remembering about this member."></textarea>';
+    h+='<textarea id="notes_'+id+'" placeholder="Paste your coaching session notes here. I will log them and pull out anything worth remembering."></textarea>';
     h+='<div class="actions"><button class="primary" onclick="addNotes(\''+id+'\')">Save to memory</button><span id="notesResult_'+id+'" class="note"></span></div>';
 
     h+='<h3>Check-ins and replies ('+r.checkins.length+')</h3>';
     if(!r.checkins.length){ h+='<div class="note">No check-ins yet.</div>'; }
     else h+= r.checkins.map(c=>{
-      const d=new Date(c.submitted_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"numeric"});
-      let ci='<div class="checkin"><div><b>'+d+'</b>'+(c.flagged_pain?' <span class="pill pain">pain</span>':'')+(c.flagged_low_motivation?' <span class="pill mot">low mot</span>':'')+' <span class="pill status">'+esc(c.response_status||"")+'</span></div>';
+      let ci='<div class="checkin"><div><b>'+dstr(c.submitted_at)+'</b>'+(c.flagged_pain?' <span class="pill pain">pain</span>':'')+(c.flagged_low_motivation?' <span class="pill mot">low mot</span>':'')+' <span class="pill status">'+esc(c.response_status||"")+'</span></div>';
       ci+='<div class="scores">'+(c.sessions_count??0)+' sessions · body '+(c.body_feeling??"-")+' · energy '+(c.energy_level??"-")+' · sleep '+(c.sleep_quality??"-")+' · motivation '+(c.motivation_score??"-")+'</div>';
       if(c.one_win) ci+='<div><b>Win:</b> '+esc(c.one_win)+'</div>';
       if(c.one_struggle) ci+='<div><b>Struggle:</b> '+esc(c.one_struggle)+'</div>';
@@ -265,8 +276,7 @@
       if(c.needs_help) ci+='<div><b>Needs help:</b> '+esc(c.needs_help)+'</div>';
       const reply=c.final_response||c.ai_draft_response;
       if(reply) ci+='<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--line);"><b>Reply '+(c.sent_at?"(sent)":"(draft)")+':</b><br>'+nlbr(reply)+'</div>';
-      ci+='</div>';
-      return ci;
+      return ci+'</div>';
     }).join("");
 
     const other=(r.interactions||[]).filter(x=>x.interaction_type!=='checkin_response');
@@ -274,29 +284,22 @@
       h+='<h3>Notes and activity</h3>';
       h+= other.map(x=>'<div class="hist">'+ new Date(x.created_at).toLocaleDateString("en-NZ",{day:"numeric",month:"short"}) +' · <b>'+esc(x.interaction_type)+'</b> ('+esc(x.created_by)+')<br>'+esc((x.content||"").slice(0,300))+'</div>').join("");
     }
-
     h+='</div>';
-    box.innerHTML=h;
+    view.innerHTML=h;
   }
+  function detailRow(label, val){ if(val==null||val==='') return ''; return '<div style="margin-bottom:6px;"><b>'+esc(label)+':</b> '+esc(String(val)).replace(/\n/g,"<br>")+'</div>'; }
 
+  async function setMemberType(id){ const v=document.getElementById("mtype_"+id).value; const r=await call({action:"update_member", member_id:id, member_type:v}); if(r.ok){ flash("Saved"); } else flash(r.error||"Error",false); }
   async function copyWelcome(id){ const t=document.getElementById("welcome_"+id).value; try{ await navigator.clipboard.writeText(t); flash("Welcome email copied. Paste it into an email to them."); }catch(e){ flash("Copy failed",false); } }
-  async function markWelcomeSent(id){ const r=await call({action:"mark_welcome_sent", member_id:id}); if(r.ok){ flash("Welcome marked as sent"); memberDetail(id); } else flash(r.error||"Error",false); }
-
-  async function setMemberType(id){ const v=document.getElementById("mtype_"+id).value; const r=await call({action:"update_member", member_id:id, member_type:v}); if(r.ok){ flash("Saved"); memberDetail(id); } else flash(r.error||"Error",false); }
-
+  async function markWelcomeSent(id){ const r=await call({action:"mark_welcome_sent", member_id:id}); if(r.ok){ flash("Welcome marked as sent"); openMember(id); } else flash(r.error||"Error",false); }
   async function addNotes(id){
     const t=document.getElementById("notes_"+id).value.trim();
     const out=document.getElementById("notesResult_"+id);
     if(!t){ flash("Paste some notes first", false); return; }
     out.textContent="Saving and reading the notes...";
     const r=await call({action:"add_notes", member_id:id, notes:t});
-    if(r.ok){
-      out.innerHTML = r.extracted.length
-        ? "Saved. Now remembering: " + r.extracted.map(x=>esc(x.category)+" - "+esc(x.fact)).join("; ")
-        : "Saved to history. Nothing new worth storing as a standalone fact.";
-      document.getElementById("notes_"+id).value="";
-      setTimeout(()=>memberDetail(id), 1200);
-    } else { out.textContent=""; flash(r.error||"Error", false); }
+    if(r.ok){ out.innerHTML = r.extracted.length ? "Saved. Now remembering: "+r.extracted.map(x=>esc(x.category)+" - "+esc(x.fact)).join("; ") : "Saved to history. Nothing new worth storing as a fact."; document.getElementById("notes_"+id).value=""; setTimeout(()=>openMember(id), 1200); }
+    else { out.textContent=""; flash(r.error||"Error", false); }
   }
 
   if(PW){ document.getElementById("pw").value=""; showApp(); }
