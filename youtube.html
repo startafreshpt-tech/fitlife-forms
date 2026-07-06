@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fit Life After 40 — YouTube</title>
+<style>
+  :root{ --bg:#0F0F10; --surface:#18181B; --border:#27272A; --accent:#FF4B2B; --text:#FAFAFA; --muted:#71717A;
+    --green:#22C55E; --gold:#F5A623; --purple:#A78BFA; --blue:#60A5FA; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:'Inter',system-ui,Arial,sans-serif; min-height:100vh; padding-bottom:60px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .spin{display:inline-block; width:16px; height:16px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite;}
+  input,select,button{font-family:inherit;}
+  input::placeholder{color:#52525B;}
+  a{color:var(--accent); text-decoration:none;}
+
+  #login{max-width:360px; margin:90px auto; text-align:center; padding:0 20px;}
+  #login .box{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:26px;}
+  #login input{width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; color:var(--text); font-size:14px; outline:none;}
+  #login button{width:100%; margin-top:12px; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:700; cursor:pointer;}
+  .kick{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+
+  header{border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:10; padding:18px 24px 0;}
+  .hwrap{max-width:820px; margin:0 auto;}
+  .brandrow{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+  .logo{width:36px; height:36px; border-radius:8px; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:#fff;}
+  .brandrow .t{font-size:16px; font-weight:800;}
+  .brandrow .s{font-size:12px; color:var(--muted);}
+  .backhub{margin-left:auto; font-size:12px; color:var(--muted); border:1px solid var(--border); padding:7px 12px; border-radius:8px;}
+  .backhub:hover{color:var(--text); border-color:var(--accent);}
+  .tabs{display:flex; gap:2px;}
+  .tab{background:none; border:none; cursor:pointer; padding:10px 14px; font-size:13px; font-weight:600; color:var(--muted); border-bottom:2px solid transparent; display:flex; align-items:center; gap:6px;}
+  .tab.active{color:var(--text); border-bottom-color:var(--accent);}
+
+  .wrap{max-width:820px; margin:0 auto; padding:28px 24px;}
+  .lead{color:var(--muted); font-size:14px; margin-bottom:20px; line-height:1.6;}
+  .modes{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+  .modebtn{background:var(--surface); color:var(--muted); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;}
+  .row{display:flex; gap:10px; margin-bottom:20px;}
+  .row input{flex:1; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px; color:var(--text); font-size:14px; outline:none;}
+  .go{background:var(--accent); color:#fff; border:none; border-radius:8px; padding:12px 24px; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:8px;}
+  .go:disabled{background:var(--border); cursor:not-allowed;}
+  .err{color:var(--accent); font-size:13px; margin-bottom:14px;}
+
+  .tcard{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;}
+  .sbox{width:44px; height:44px; border-radius:8px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; font-family:monospace;}
+  .tbody{flex:1; min-width:0;}
+  .ttitle{font-size:14px; font-weight:600; line-height:1.5;}
+  .tfb{font-size:12px; color:var(--muted); margin-top:5px; line-height:1.5;}
+  .copy{background:none; border:1px solid var(--border); border-radius:6px; padding:5px 10px; color:var(--muted); font-size:12px; cursor:pointer; flex-shrink:0;}
+  .copy:hover{color:var(--text);}
+  .foot{font-size:12px; color:var(--muted); text-align:right; margin-top:6px;}
+
+  /* builder */
+  .preview{background:var(--surface); border:2px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:24px; display:flex; gap:16px; align-items:flex-start;}
+  .ring{width:56px; height:56px; border-radius:12px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .ring .n{font-size:18px; font-weight:900; font-family:monospace; line-height:1;}
+  .ring .l{font-size:9px; color:var(--muted); text-transform:uppercase; margin-top:2px;}
+  .pvttl{font-size:16px; font-weight:800; line-height:1.4; margin-bottom:6px;}
+  .cols{display:flex; flex-direction:column; gap:10px; margin-bottom:22px;}
+  .colrow{display:flex; align-items:center; gap:10px;}
+  .collabel{width:150px; flex-shrink:0; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; text-align:right;}
+  .colrow select{flex:1; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; font-weight:600; cursor:pointer; outline:none; appearance:none;}
+  .shuffle{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; margin-bottom:22px;}
+  .savebtn{background:none; border:1px solid var(--border); border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; font-weight:600;}
+  .hist h4{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; font-weight:700;}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <span class="kick">Fit Life After 40</span>
+  <div class="box" style="margin-top:12px;">
+    <div style="font-size:18px; font-weight:800; margin-bottom:14px;">YouTube tools</div>
+    <input type="password" id="pw" placeholder="Admin password" onkeydown="if(event.key==='Enter')login()" />
+    <button onclick="login()">Log in</button>
+    <div id="loginNote" style="font-size:12px; color:var(--muted); margin-top:8px;"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <header>
+    <div class="hwrap">
+      <div class="brandrow">
+        <div class="logo">&#9654;</div>
+        <div><div class="t">Fit Life After 40</div><div class="s">YouTube tools</div></div>
+        <a class="backhub" href="https://startafreshpt-tech.github.io/fitlife-forms/admin.html">Coach dashboard</a>
+      </div>
+      <div class="tabs">
+        <button class="tab active" id="tab-gen" onclick="showTab('gen')">&#10022; Title Generator</button>
+        <button class="tab" id="tab-build" onclick="showTab('build')">&#8862; Title Builder</button>
+      </div>
+    </div>
+  </header>
+  <div class="wrap"><div id="view"></div></div>
+</div>
+
+<script>
+  const API = "https://eqevyohstkwqslloqsni.supabase.co/functions/v1/yt-titles";
+  let PW = sessionStorage.getItem("fl_admin_pw") || "";
+  const C = { accent:"#FF4B2B", green:"#22C55E", gold:"#F5A623", purple:"#A78BFA", muted:"#71717A", border:"#27272A" };
+
+  async function call(payload){ const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({password:PW,...payload})}); return r.json(); }
+  function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function scoreColor(s){ if(s==null) return C.muted; if(s>=70) return C.green; if(s>=50) return C.gold; return C.accent; }
+  function copy(t){ navigator.clipboard && navigator.clipboard.writeText(t); }
+
+  async function login(){
+    PW=document.getElementById("pw").value;
+    const r=await call({action:"ping"});
+    if(r.ok){ sessionStorage.setItem("fl_admin_pw",PW); document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; showTab("gen"); }
+    else document.getElementById("loginNote").textContent = r.error==="unauthorized" ? "Wrong password." : (r.error||"Could not log in.");
+  }
+  function showTab(t){
+    document.getElementById("tab-gen").classList.toggle("active", t==="gen");
+    document.getElementById("tab-build").classList.toggle("active", t==="build");
+    if(t==="gen") renderGen(); else renderBuild();
+  }
+
+  /* ---------- Title Generator ---------- */
+  let GEN = { mode:"claude", topic:"", titles:[] };
+  function renderGen(){
+    const modes=[["claude","✦ Proven formats"],["surprise","⚡ Surprise me"]];
+    let h='<p class="lead">Enter a topic. Six titles are generated in your channel style, then each is scored for click-through potential.</p>';
+    h+='<div class="modes">'+modes.map(m=>'<button class="modebtn" style="'+(GEN.mode===m[0]?('color:'+C.accent+';border-color:'+C.accent+'66;background:'+C.accent+'18'):'')+'" onclick="GEN.mode=\''+m[0]+'\';GEN.titles=[];renderGen()">'+m[1]+'</button>').join("")+'</div>';
+    h+='<div class="row"><input id="topic" value="'+esc(GEN.topic)+'" placeholder="e.g. walking for weight loss after 50" onkeydown="if(event.key===\'Enter\')genTitles()" /><button class="go" id="genBtn" onclick="genTitles()">'+(GEN.mode==="surprise"?"⚡ Surprise Me":"Generate Titles")+'</button></div>';
+    h+='<div id="genErr" class="err" style="display:none;"></div><div id="genList"></div>';
+    document.getElementById("view").innerHTML=h;
+    if(GEN.titles.length) paintGen();
+  }
+  async function genTitles(){
+    GEN.topic=document.getElementById("topic").value.trim();
+    if(!GEN.topic) return;
+    const btn=document.getElementById("genBtn"); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Generating...';
+    document.getElementById("genErr").style.display="none";
+    const r=await call({action:"generate", topic:GEN.topic, mode:GEN.mode});
+    btn.disabled=false; btn.textContent=(GEN.mode==="surprise"?"⚡ Surprise Me":"Generate Titles");
+    if(!r.ok || !r.titles || !r.titles.length){ const e=document.getElementById("genErr"); e.style.display="block"; e.textContent=r.error||"No titles came back. Try again."; return; }
+    GEN.titles=r.titles.map(t=>({title:t, score:null, feedback:"", loading:true}));
+    paintGen();
+    GEN.titles.forEach((t,i)=>scoreGen(i,t.title));
+  }
+  async function scoreGen(i,title){ const r=await call({action:"score", title}); GEN.titles[i]={title, score:r.score??null, feedback:r.feedback||"", loading:false}; paintGen(); }
+  function paintGen(){
+    const list=document.getElementById("genList"); if(!list) return;
+    const sorted=[...GEN.titles].sort((a,b)=>{ if(a.loading&&!b.loading)return 1; if(!a.loading&&b.loading)return -1; return (b.score||0)-(a.score||0); });
+    list.innerHTML=sorted.map(t=>{ const col=scoreColor(t.score); return '<div class="tcard" style="border-color:'+(t.score>=70?col+"55":C.border)+'">'
+      +'<div class="sbox" style="background:'+(t.loading?C.border:col+"22")+';border:1px solid '+(t.loading?C.border:col+"55")+';color:'+col+'">'+(t.loading?'<span class="spin"></span>':(t.score!=null?t.score:"—"))+'</div>'
+      +'<div class="tbody"><div class="ttitle">'+esc(t.title)+'</div>'+(t.loading?'<div class="tfb">Scoring...</div>':(t.feedback?'<div class="tfb">'+esc(t.feedback)+'</div>':''))+'</div>'
+      +'<button class="copy" onclick="copy(\''+esc(t.title).replace(/\x27/g,"\\x27")+'\')">Copy</button></div>'; }).join("")
+      +'<div class="foot">Estimated score, 70+ is the target. Live VidIQ scoring coming once your VidIQ is connected.</div>';
+  }
+
+  /* ---------- Title Builder ---------- */
+  const COLS=[
+    {id:"prefix",label:"ONE THING",color:"#60A5FA",options:["One Simple","This One","One Overlooked","One Essential","This ONE","One Underrated","One Proven","One Joint-Friendly","7 Highly Effective","How","The Best","One Forgotten"]},
+    {id:"movement",label:"MOVEMENT",color:"#F472B6",options:["Exercise","Band Exercise","Core Exercise","Kettlebell Move","Carry Exercise","Bodyweight Move","Band Move","Dumbbell Move","Cardio Move","Stretching Routine","Walking Habit","Strength Move","Hip Hinge","Mobility Drill","Balance Exercise"]},
+    {id:"outcome",label:"UNIVERSAL OUTCOME",color:"#34D399",options:["Builds Muscle Everywhere","Get Stronger","Builds Full Body Strength","Builds Real Strength","Improves Strength and Stability","Improves Balance","Improves Balance and Coordination","Improves Stability","Improves Walking Confidence","Builds Leg Strength","Builds Lower Body Strength","Builds Upper Body Strength","Builds Core Strength","Burns Fat While You Sleep","Improves Posture"]},
+    {id:"removal",label:"REMOVAL / RELIEF",color:"#FB923C",options:["","Without Wrecking Your Joints","Without Fancy Equipment","Without Heavy Weights","Without Maxing Out","Without Ego Lifting","Without Going to a Gym","Without Hurting Your Back","Without Any Equipment","Without Risking Injury"]},
+    {id:"age",label:"AGE",color:"#A78BFA",options:["After 50","After 55","After 60","After 65","Over 50","Over 60","If You're 50+","At Any Age",""]},
+    {id:"novelty",label:"NOVELTY / ANGLE",color:"#FCD34D",options:["","Built for Over-50s","Almost Nobody Trains This","Everyone Over 50 Should Be Doing This","Simple but Effective","Low Impact, High Return","Nobody Talks About This","Overlooked but Powerful","More Effective Than It Looks","Knee-Safe","Backed by Science","Doctor-Approved","Most People Get This Wrong","Stop Ignoring This"]},
+  ];
+  let SEL={}, HIST=[], scoreTimer=null, BSTATE={score:null,feedback:"",scoring:false};
+  function assemble(){ const s=SEL; let t=[s.prefix,s.movement].filter(Boolean).join(" "); if(s.outcome) t+=" That "+s.outcome; if(s.removal) t+=" "+s.removal; if(s.age) t+=" "+s.age; if(s.novelty) t+=" ("+s.novelty+")"; return t.trim(); }
+  function renderBuild(){
+    if(!Object.keys(SEL).length) COLS.forEach(c=>SEL[c.id]=c.options[0]);
+    let h='<p class="lead">Build a title by choosing from each column. It is scored automatically as you change selections.</p>';
+    h+='<div id="pv"></div>';
+    h+='<div class="cols">'+COLS.map(c=>'<div class="colrow"><div class="collabel" style="color:'+c.color+'">'+c.label+'</div><select onchange="onSel(\''+c.id+'\',this.value)">'+c.options.map(o=>'<option value="'+esc(o)+'"'+(SEL[c.id]===o?" selected":"")+' style="background:#18181B">'+(o?esc(o):"(none, omit this part)")+'</option>').join("")+'</select></div>').join("")+'</div>';
+    h+='<button class="shuffle" onclick="shuffle()">🎲 Random shuffle</button>';
+    h+='<div class="hist" id="histBox"></div>';
+    document.getElementById("view").innerHTML=h;
+    paintPreview(); paintHist();
+    triggerScore();
+  }
+  function onSel(id,val){ SEL[id]=val; paintPreview(); triggerScore(); }
+  function triggerScore(){ if(scoreTimer) clearTimeout(scoreTimer); BSTATE={score:null,feedback:"",scoring:true}; paintPreview(); const title=assemble(); scoreTimer=setTimeout(async()=>{ const r=await call({action:"score", title}); BSTATE={score:r.score??null, feedback:r.feedback||"", scoring:false}; paintPreview(); }, 800); }
+  function paintPreview(){
+    const box=document.getElementById("pv"); if(!box) return;
+    const title=assemble(); const col=scoreColor(BSTATE.score);
+    box.innerHTML='<div class="preview" style="border-color:'+col+'55">'
+      +'<div class="ring" style="background:'+col+'18;border:2px solid '+col+'55">'+(BSTATE.scoring?'<span class="spin"></span>':'<div class="n" style="color:'+col+'">'+(BSTATE.score!=null?BSTATE.score:"—")+'</div><div class="l">score</div>')+'</div>'
+      +'<div style="flex:1;min-width:0"><div class="pvttl">'+esc(title)+'</div>'+(BSTATE.scoring?'<div class="tfb">Scoring...</div>':(BSTATE.feedback?'<div class="tfb">'+esc(BSTATE.feedback)+'</div>':''))+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button class="copy" onclick="copy(\''+esc(title).replace(/\x27/g,"\\x27")+'\')">Copy</button><button class="savebtn" style="color:'+col+';border-color:'+col+'44" onclick="saveHist()">Save</button></div></div>';
+  }
+  function saveHist(){ if(BSTATE.score==null) return; const title=assemble(); HIST=[{title,score:BSTATE.score,feedback:BSTATE.feedback,id:Date.now()},...HIST.filter(h=>h.title!==title)].slice(0,10); paintHist(); }
+  function paintHist(){
+    const box=document.getElementById("histBox"); if(!box) return;
+    if(!HIST.length){ box.innerHTML=""; return; }
+    box.innerHTML='<h4>Saved titles</h4>'+HIST.map(h=>{ const col=scoreColor(h.score); return '<div class="tcard" style="padding:10px 14px;margin-bottom:8px"><div class="sbox" style="width:36px;height:36px;font-size:13px;background:'+col+'18;border:1px solid '+col+'44;color:'+col+'">'+(h.score!=null?h.score:"—")+'</div><div class="tbody"><div class="ttitle" style="font-size:13px">'+esc(h.title)+'</div></div><button class="copy" onclick="copy(\''+esc(h.title).replace(/\x27/g,"\\x27")+'\')">Copy</button></div>'; }).join("");
+  }
+  function shuffle(){ COLS.forEach(c=>{ const opts=(c.id==="removal"||c.id==="novelty"||c.id==="age")?c.options:c.options.filter(o=>o); SEL[c.id]=opts[Math.floor(Math.random()*opts.length)]; }); renderBuild(); }
+
+  if(PW){ document.getElementById("pw").value=""; document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; showTab("gen"); }
+</script>
+</body>
+</html>
