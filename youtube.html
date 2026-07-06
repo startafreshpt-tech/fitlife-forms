@@ -94,6 +94,9 @@
       <div class="tabs">
         <button class="tab active" id="tab-gen" onclick="showTab('gen')">&#10022; Title Generator</button>
         <button class="tab" id="tab-build" onclick="showTab('build')">&#8862; Title Builder</button>
+        <button class="tab" id="tab-library" onclick="showTab('library')">&#9638; Video Library</button>
+        <button class="tab" id="tab-next" onclick="showTab('next')">&#9678; What to Make Next</button>
+        <button class="tab" id="tab-intel" onclick="showTab('intel')">&#9670; Content Intel</button>
       </div>
     </div>
   </header>
@@ -105,7 +108,11 @@
   let PW = sessionStorage.getItem("fl_admin_pw") || "";
   const C = { green:"#1f6f54", gold:"#c2792b", red:"#9a2b1e", muted:"#5d6b66", line:"#dfe4e1" };
 
+  const API2 = "https://eqevyohstkwqslloqsni.supabase.co/functions/v1/yt-data";
   async function call(payload){ const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({password:PW,...payload})}); return r.json(); }
+  async function call2(payload){ const r=await fetch(API2,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({password:PW,...payload})}); return r.json(); }
+  function dstr(v){ return v ? new Date(v).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"2-digit"}) : "-"; }
+  function fmtN(n){ if(!n&&n!==0) return "—"; if(n>=1e6) return (n/1e6).toFixed(1)+"M"; if(n>=1e3) return (n/1e3).toFixed(1)+"K"; return String(n); }
   function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
   function scoreColor(s){ if(s==null) return C.muted; if(s>=70) return C.green; if(s>=50) return C.gold; return C.red; }
   function copy(t){ navigator.clipboard && navigator.clipboard.writeText(t); }
@@ -117,9 +124,12 @@
     else document.getElementById("loginNote").textContent = r.error==="unauthorized" ? "Wrong password." : (r.error||"Could not log in.");
   }
   function showTab(t){
-    document.getElementById("tab-gen").classList.toggle("active", t==="gen");
-    document.getElementById("tab-build").classList.toggle("active", t==="build");
-    if(t==="gen") renderGen(); else renderBuild();
+    ["gen","build","library","next","intel"].forEach(id=>{ const el=document.getElementById("tab-"+id); if(el) el.classList.toggle("active", id===t); });
+    if(t==="gen") renderGen();
+    else if(t==="build") renderBuild();
+    else if(t==="library") loadLibrary();
+    else if(t==="next") loadNext();
+    else if(t==="intel") renderIntel();
   }
 
   /* ---------- Title Generator ---------- */
@@ -195,6 +205,64 @@
     box.innerHTML='<h4>Saved titles</h4>'+HIST.map(h=>{ const col=scoreColor(h.score); return '<div class="tcard" style="padding:10px 14px;margin-bottom:8px"><div class="sbox" style="width:36px;height:36px;font-size:13px;background:'+col+'14;border:1px solid '+col+'44;color:'+col+'">'+(h.score!=null?h.score:"—")+'</div><div class="tbody"><div class="ttitle" style="font-size:13px">'+esc(h.title)+'</div></div><button class="copy" onclick="copy(\''+esc(h.title).replace(/\x27/g,"\\x27")+'\')">Copy</button></div>'; }).join("");
   }
   function shuffle(){ COLS.forEach(c=>{ const opts=(c.id==="removal"||c.id==="novelty"||c.id==="age")?c.options:c.options.filter(o=>o); SEL[c.id]=opts[Math.floor(Math.random()*opts.length)]; }); renderBuild(); }
+
+  /* ---------- Video Library ---------- */
+  let LIB=[];
+  async function loadLibrary(){
+    const view=document.getElementById("view");
+    view.innerHTML='<p class="lead">Your recent videos ranked by real view count, straight from your channel feed.</p><div class="tcard"><span class="spin"></span> &nbsp;Loading your videos...</div>';
+    const r=await call2({action:"channel_videos"});
+    if(!r.ok||!r.videos){ view.innerHTML='<div class="tcard">'+esc(r.error||"Could not load videos.")+'</div>'; return; }
+    LIB=r.videos; renderLibrary("views");
+  }
+  function renderLibrary(sortBy){
+    let vids=[...LIB];
+    if(sortBy==="recent") vids.sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt)); else vids.sort((a,b)=>b.views-a.views);
+    const max=Math.max.apply(null, LIB.map(v=>v.views).concat([1]));
+    let h='<p class="lead">Your latest videos ranked by real view count, from your channel feed.</p>';
+    h+='<div class="modes"><button class="modebtn" style="'+(sortBy!=="recent"?'color:'+C.green+';border-color:'+C.green+'66':'')+'" onclick="renderLibrary(\'views\')">Most views</button><button class="modebtn" style="'+(sortBy==="recent"?'color:'+C.green+';border-color:'+C.green+'66':'')+'" onclick="renderLibrary(\'recent\')">Newest</button><span class="foot" style="align-self:center;margin:0 0 0 auto">'+LIB.length+' videos</span></div>';
+    h+=vids.map((v,i)=>'<div class="tcard" style="position:relative;overflow:hidden"><div style="position:absolute;bottom:0;left:0;height:3px;width:'+((v.views/max)*100).toFixed(1)+'%;background:'+C.green+'66"></div><div style="width:24px;color:'+C.muted+';font-size:12px;font-family:monospace;padding-top:2px">#'+(i+1)+'</div><div class="tbody"><a href="https://youtu.be/'+v.id+'" target="_blank" class="ttitle" style="display:block">'+esc(v.title)+'</a><div style="display:flex;gap:16px;margin-top:6px"><span style="font-size:12px;color:'+C.green+';font-family:monospace;font-weight:700">'+fmtN(v.views)+' views</span><span style="font-size:12px;color:'+C.muted+'">'+dstr(v.publishedAt)+'</span></div></div></div>').join("");
+    document.getElementById("view").innerHTML=h;
+  }
+
+  /* ---------- What to Make Next ---------- */
+  async function loadNext(){
+    const view=document.getElementById("view");
+    view.innerHTML='<p class="lead">Claude reads your recent videos and their views, then recommends your next 5.</p><div class="tcard"><span class="spin"></span> &nbsp;Analysing your channel...</div>';
+    const r=await call2({action:"recommend"});
+    if(!r.ok){ view.innerHTML='<div class="tcard">'+esc(r.error||"Error")+'</div>'; return; }
+    const s=r.summary||{};
+    let h='<p class="lead">Recommendations based on your recent videos and their real view counts.</p>';
+    h+='<div class="foot" style="text-align:left;margin:0 0 16px">'+(s.videoCount||0)+' recent videos analysed'+(s.topVideo?' · top: "'+esc(s.topVideo.title)+'" ('+fmtN(s.topVideo.views)+' views)':'')+'</div>';
+    h+=(r.recs||[]).map(rc=>{ const col=rc.estimatedPotential==="high"?C.green:rc.estimatedPotential==="medium"?C.gold:C.red; const lbl=rc.estimatedPotential==="high"?"High potential":rc.estimatedPotential==="medium"?"Strong pick":"Solid play"; return '<div class="tcard" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="font-size:15px;font-weight:700;color:var(--green-dark);line-height:1.4">'+esc(rc.title)+'</div><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:'+col+'18;color:'+col+';white-space:nowrap">'+lbl+'</span></div>'+(rc.rationale?'<div style="font-size:13px;color:'+C.muted+';line-height:1.6">'+esc(rc.rationale)+'</div>':'')+(rc.format?'<div><span style="font-size:11px;padding:3px 9px;border-radius:6px;background:var(--green-soft);color:var(--green-dark);font-weight:600">'+esc(rc.format)+'</span></div>':'')+'</div>'; }).join("");
+    h+='<button class="shuffle" style="margin-top:12px" onclick="loadNext()">Refresh recommendations</button>';
+    document.getElementById("view").innerHTML=h;
+  }
+
+  /* ---------- Content Intel ---------- */
+  let INTEL={};
+  const MAGROW=[["grownups","🇳🇿 Grownups NZ"],["superage","🇺🇸 Super Age"],["eatthis","🇺🇸 Eat This Not That"]];
+  function renderIntel(){
+    let h='<p class="lead">Scan health publications for what is trending, then turn it into video ideas cross-referenced against your channel formats.</p>';
+    h+=MAGROW.map(m=>{ const d=INTEL[m[0]]; let c='<div class="tcard" style="flex-direction:column;align-items:stretch;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--green-dark)">'+m[1]+'</div><button class="modebtn" id="scan_'+m[0]+'" onclick="scanMag(\''+m[0]+'\')">'+(d?"Re-scan":"Scan")+'</button></div>';
+      if(d&&d.topics&&d.topics.length){ c+=d.topics.map(t=>'<div style="border:1px solid var(--line);border-radius:8px;padding:8px 12px"><div style="font-size:13px;font-weight:600">'+esc(t.headline)+'</div>'+(t.youtubeOpportunity?'<div style="font-size:12px;color:'+C.green+';margin-top:4px">&rarr; '+esc(t.youtubeOpportunity)+'</div>':'')+'</div>').join(""); }
+      return c+'</div>'; }).join("");
+    const scanned=Object.keys(INTEL).length;
+    if(scanned>0) h+='<button class="go" id="ideasBtn" style="width:100%;justify-content:center;margin-bottom:6px" onclick="genIdeas()">Generate video ideas from '+scanned+' magazine'+(scanned>1?"s":"")+'</button>';
+    h+='<div id="ideasBox" style="margin-top:18px"></div>';
+    document.getElementById("view").innerHTML=h;
+    if(window._ideasCache) document.getElementById("ideasBox").innerHTML=window._ideasCache;
+  }
+  async function scanMag(id){ const btn=document.getElementById("scan_"+id); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Scanning...'; const r=await call2({action:"scan",magId:id}); if(r.ok&&r.data){ INTEL[id]=r.data; } renderIntel(); }
+  async function genIdeas(){
+    const box=document.getElementById("ideasBox"); box.innerHTML='<div class="tcard"><span class="spin"></span> &nbsp;Generating ideas...</div>';
+    const topics=Object.values(INTEL).map(d=>'=== '+d.siteName+' ===\n'+((d.topics||[]).map(t=>'- '+t.headline+': '+(t.angle||"")).join('\n'))).join('\n\n');
+    const r=await call2({action:"ideas",topics});
+    if(!r.ok){ box.innerHTML='<div class="tcard">'+esc(r.error||"Error")+'</div>'; return; }
+    let h='<h4 style="font-size:11px;color:'+C.muted+';text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Video ideas</h4>';
+    h+=(r.ideas||[]).map(idea=>'<div class="tcard" style="flex-direction:column;align-items:stretch;gap:8px">'+(idea.overlap?'<div style="font-size:11px;color:'+C.green+';font-weight:700;text-transform:uppercase">&#9889; Cross-magazine trend, validated demand</div>':'')+'<div><div style="font-size:11px;color:'+C.muted+';text-transform:uppercase">Proven title</div><div style="font-size:14px;font-weight:700;color:var(--green-dark)">'+esc(idea.title)+'</div></div>'+(idea.freshTitle?'<div><div style="font-size:11px;color:#7c3aed;text-transform:uppercase">Fresh alternative</div><div style="font-size:14px;font-weight:600">'+esc(idea.freshTitle)+'</div></div>':'')+(idea.angle?'<div style="font-size:13px;color:'+C.muted+';line-height:1.6">'+esc(idea.angle)+'</div>':'')+(idea.whyNow?'<div style="font-size:12px;color:'+C.gold+'">Why now: '+esc(idea.whyNow)+'</div>':'')+'</div>').join("");
+    window._ideasCache=h; box.innerHTML=h;
+  }
 
   if(PW){ document.getElementById("pw").value=""; document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; showTab("gen"); }
 </script>
