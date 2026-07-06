@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fit Life After 40 — Coach</title>
+<title>Fit Life After 40 — Review</title>
 <style>
   :root{ --ink:#1c2b27; --muted:#5d6b66; --line:#dfe4e1; --bg:#f4f1ea; --card:#fff;
     --green:#1f6f54; --green-dark:#164f3d; --green-soft:#e8f1ec; --gold:#c2792b; --gold-soft:#f7ecdc;
-    --red:#9a2b1e; --red-soft:#fde8e6; --side:#173c30; }
+    --red:#9a2b1e; --red-soft:#fde8e6; }
   *{box-sizing:border-box;}
   body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55;}
   button{font-family:inherit; font-size:14px; border-radius:9px; border:1px solid var(--line); background:#fff; padding:9px 14px; cursor:pointer; transition:.12s;}
@@ -20,41 +20,45 @@
   textarea{min-height:150px; resize:vertical; line-height:1.6;}
   h3{font-size:15px; color:var(--green-dark); margin:16px 0 6px;}
 
-  /* Login */
   #login{max-width:360px; margin:80px auto; text-align:center;}
   .badge-brand{display:inline-block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); background:var(--green-soft); padding:5px 12px; border-radius:999px; font-weight:600;}
-  #login .card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:28px; margin-top:14px;}
+  #login .card{padding:28px;}
   .note{font-size:12px; color:var(--muted); margin-top:8px;}
 
-  /* Layout */
-  .layout{display:flex; min-height:100vh;}
-  .side{width:210px; flex-shrink:0; background:var(--side); color:#dfeee7; padding:20px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
-  .side .brand{font-weight:700; color:#fff; padding:0 20px 6px; font-size:15px;}
-  .side .brandsub{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#8fc3ad; padding:0 20px 16px;}
-  .navitem{display:block; padding:11px 20px; color:#cfe6dc; cursor:pointer; font-size:14.5px; border-left:3px solid transparent; text-decoration:none;}
-  .navitem:hover{background:rgba(255,255,255,.06); color:#fff;}
-  .navitem.active{background:rgba(255,255,255,.10); color:#fff; border-left-color:var(--gold); font-weight:600;}
-  .navsec{font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#7fb39d; padding:18px 20px 6px;}
-  .navitem.sub{font-size:13.5px; color:#b9dccd;}
-  .side .foot{margin-top:auto; padding:14px 20px 0;}
-  .side .foot button{width:100%; background:transparent; color:#cfe6dc; border-color:#3c5f52;}
-  .side .foot button:hover{background:rgba(255,255,255,.06);}
-
-  .content{flex:1; padding:24px 26px 80px; min-width:0;}
-  .topline{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
-  .topline h1{font-size:20px; color:var(--green-dark); margin:0;}
+  /* light side nav */
+  .layout{display:flex; align-items:flex-start; max-width:1120px; margin:0 auto;}
+  .side{width:172px; flex-shrink:0; padding:22px 10px; position:sticky; top:0;}
+  .side .brand{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:700; padding:0 10px 14px;}
+  .navitem{display:block; padding:10px 12px; border-radius:9px; color:var(--ink); cursor:pointer; font-size:14.5px; margin-bottom:4px;}
+  .navitem:hover{background:var(--green-soft);}
+  .navitem.active{background:var(--green); color:#fff; font-weight:600;}
+  .side .foot{margin-top:14px; padding:0 2px;}
+  .side .foot button{width:100%;}
+  .content{flex:1; padding:22px 22px 80px; min-width:0;}
+  .topmsg{height:20px; margin-bottom:8px;}
   #msg{font-size:13px; padding:6px 12px; border-radius:8px; display:none;}
   #msg.ok{display:inline-block; background:var(--green-soft); color:var(--green-dark);}
   #msg.err{display:inline-block; background:var(--red-soft); color:var(--red);}
 
-  /* Cards / bits */
   .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:16px;}
   .card.flag{border-color:#e6b8a8; box-shadow:inset 3px 0 0 var(--gold);}
+  .section-label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; margin:0 0 8px;}
+  .linkrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-bottom:18px;}
+  .tile{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .tile .tiletitle{font-weight:600; color:var(--green-dark); font-size:15px;}
+  .tile .tiledesc{font-size:13px; color:var(--muted); margin:2px 0 12px;}
+  .btnlink{display:inline-block; text-decoration:none; font-size:14px; border-radius:9px; border:1px solid var(--green); background:var(--green); color:#fff; padding:9px 14px; font-weight:600;}
+  .btnlink:hover{background:var(--green-dark);}
+  .searchpanel{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:18px;}
+  .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .searchresult{padding:8px 10px; border:1px solid var(--line); border-radius:8px; margin-top:8px; cursor:pointer; font-size:14px;}
+  .searchresult:hover{border-color:var(--green); background:var(--green-soft);}
+  .toggle{display:flex; align-items:center; gap:7px; font-size:14px; color:var(--muted);}
+
   .memhead{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
   .memname{font-size:18px; font-weight:600; color:var(--green-dark);}
   .pill{font-size:12px; padding:3px 9px; border-radius:999px; font-weight:600;}
   .pill.streak{background:var(--green-soft); color:var(--green-dark);}
-  .pill.type{background:#eee; color:#555;}
   .pill.pain{background:var(--red-soft); color:var(--red);}
   .pill.mot{background:var(--gold-soft); color:#6b4a1e;}
   .pill.status{background:#eef; color:#334;}
@@ -64,19 +68,17 @@
   .scores{font-size:13px; color:var(--muted); margin:4px 0;}
   .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center;}
   .timebox{font-size:13px; color:var(--muted);}
-  .empty{text-align:center; color:var(--muted); padding:40px; background:#fff; border:1px dashed var(--line); border-radius:14px;}
-  .toggle{display:flex; align-items:center; gap:7px; font-size:14px; color:var(--muted);}
+  .label{font-size:12px; color:var(--muted); margin:12px 0 5px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
+  .empty{text-align:center; color:var(--muted); padding:36px; background:#fff; border:1px dashed var(--line); border-radius:14px;}
   .hist{border-left:2px solid var(--line); padding-left:12px; margin:8px 0; font-size:13px;}
   .tag{display:inline-block; font-size:11px; background:#eee; border-radius:6px; padding:1px 6px; margin-left:6px; color:#555;}
-  .label{font-size:12px; color:var(--muted); margin:12px 0 5px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
   .backlink{display:inline-block; font-size:13px; color:var(--green); cursor:pointer; margin-bottom:10px;}
   .backlink:hover{text-decoration:underline;}
 
-  /* Members table */
   table.members{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:14px;}
   table.members th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--line); background:#faf8f3;}
   table.members td{padding:11px 12px; border-bottom:1px solid var(--line);}
-  table.members tr{cursor:pointer;}
+  table.members tbody tr{cursor:pointer;}
   table.members tbody tr:hover{background:var(--green-soft);}
   table.members tr:last-child td{border-bottom:none;}
   .yes{color:var(--green-dark); font-weight:600;}
@@ -89,7 +91,7 @@
 <div id="login">
   <span class="badge-brand">Fit Life After 40</span>
   <div class="card">
-    <h1 style="margin:0 0 14px; color:var(--green-dark); font-size:20px;">Coach login</h1>
+    <h1 style="margin:0 0 14px; color:var(--green-dark); font-size:20px;">Coach review</h1>
     <input type="password" id="pw" placeholder="Admin password" />
     <button class="primary" style="width:100%; margin-top:12px;" onclick="login()">Log in</button>
     <div class="note" id="loginNote"></div>
@@ -100,16 +102,12 @@
   <div class="layout">
     <aside class="side">
       <div class="brand">Fit Life After 40</div>
-      <div class="brandsub">Coach</div>
-      <a class="navitem" id="nav-queue" onclick="showView('queue')">Review queue</a>
+      <a class="navitem" id="nav-home" onclick="showView('home')">Home</a>
       <a class="navitem" id="nav-members" onclick="showView('members')">Members</a>
-      <div class="navsec">Member forms</div>
-      <a class="navitem sub" href="https://startafreshpt-tech.github.io/fitlife-forms/" target="_blank" rel="noopener">Onboarding form</a>
-      <a class="navitem sub" href="https://startafreshpt-tech.github.io/fitlife-forms/checkin.html" target="_blank" rel="noopener">Weekly check-in</a>
       <div class="foot"><button onclick="logout()">Log out</button></div>
     </aside>
     <main class="content">
-      <div class="topline"><h1 id="viewTitle">Review queue</h1><span id="msg"></span></div>
+      <div class="topmsg"><span id="msg"></span></div>
       <div id="view"></div>
     </main>
   </div>
@@ -121,6 +119,7 @@
   const CHECKIN_URL = "https://startafreshpt-tech.github.io/fitlife-forms/checkin.html";
   let PW = sessionStorage.getItem("fl_admin_pw") || "";
   let MEMBERS = [];
+  let BACK_TO = "home";
 
   async function call(payload){
     const r = await fetch(API, { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ password: PW, ...payload }) });
@@ -130,6 +129,7 @@
   function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
   function nlbr(s){ return esc(s||"").replace(/\n/g,"<br>"); }
   function dstr(v){ return v ? new Date(v).toLocaleDateString("en-NZ",{day:"numeric",month:"short",year:"numeric"}) : "-"; }
+  function copyLink(u){ navigator.clipboard.writeText(u).then(()=>flash("Link copied")).catch(()=>flash("Copy failed",false)); }
 
   async function login(){
     PW = document.getElementById("pw").value;
@@ -138,25 +138,44 @@
     else { document.getElementById("loginNote").textContent = res.error==="unauthorized" ? "Wrong password." : (res.error||"Could not log in."); }
   }
   function logout(){ sessionStorage.removeItem("fl_admin_pw"); PW=""; location.reload(); }
-  function showApp(){ document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; showView("queue"); }
+  function showApp(){ document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; showView("home"); }
 
   function setActive(name){ document.querySelectorAll(".navitem").forEach(n=>n.classList.remove("active")); const el=document.getElementById("nav-"+name); if(el) el.classList.add("active"); }
   function showView(name){
-    if(name==="queue"){ setActive("queue"); document.getElementById("viewTitle").textContent="Review queue"; loadQueue(); }
-    else if(name==="members"){ setActive("members"); document.getElementById("viewTitle").textContent="Members"; loadMembers(); }
+    if(name==="home"){ setActive("home"); renderHome(); }
+    else if(name==="members"){ setActive("members"); loadMembers(); }
   }
 
-  /* ---------------- Review queue ---------------- */
-  async function loadQueue(){
-    const view=document.getElementById("view");
-    view.innerHTML = '<div style="display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">'
-      + '<label class="toggle"><input type="checkbox" id="flaggedOnly" style="width:auto;" onchange="loadQueue()"'+(window._flagged?" checked":"")+'/> Flagged only (pain / low motivation)</label>'
-      + '<button style="margin-left:auto;" onclick="loadQueue()">Refresh</button></div>'
-      + '<p class="note" style="margin:0 0 14px;">Edit the reply if you like, hit Copy reply, paste it into an email to the member, then Mark as done.</p>'
+  /* ---------------- Home (original layout) ---------------- */
+  function renderHome(){
+    document.getElementById("view").innerHTML =
+      '<p class="section-label">Member forms (share these in Skool)</p>'
+      + '<div class="linkrow">'
+      + '<div class="tile"><div class="tiletitle">Onboarding form</div><div class="tiledesc">New member welcome and profile. Send this once when someone joins.</div><div class="actions"><a class="btnlink" href="'+ONBOARD_URL+'" target="_blank" rel="noopener">Open</a><button onclick="copyLink(\''+ONBOARD_URL+'\')">Copy link</button></div></div>'
+      + '<div class="tile"><div class="tiletitle">Weekly check-in</div><div class="tiledesc">The weekly check-in. Pin this in the group every Monday.</div><div class="actions"><a class="btnlink" href="'+CHECKIN_URL+'" target="_blank" rel="noopener">Open</a><button onclick="copyLink(\''+CHECKIN_URL+'\')">Copy link</button></div></div>'
+      + '</div>'
+      + '<div class="searchpanel"><div class="controls"><input type="text" id="searchQ" placeholder="Search a member by name or email" style="flex:1; min-width:200px;" onkeydown="if(event.key===\'Enter\')doSearch()" /><button onclick="doSearch()">Search</button></div><div id="searchResults"></div></div>'
+      + '<div class="controls" style="margin-bottom:12px;"><strong style="font-size:16px; color:var(--green-dark);">Pending queue</strong><label class="toggle"><input type="checkbox" id="flaggedOnly" style="width:auto;" onchange="loadQueue()"'+(window._flagged?" checked":"")+' /> Flagged only (pain / low motivation)</label><button style="margin-left:auto;" onclick="loadQueue()">Refresh</button></div>'
+      + '<p class="note" style="margin:-4px 0 14px;">Edit the reply if you like, hit Copy reply, paste it into an email to the member, then Mark as done.</p>'
       + '<div id="queue"><div class="empty">Loading...</div></div>';
+    loadQueue();
+  }
+
+  async function doSearch(){
+    const q=document.getElementById("searchQ").value.trim();
+    const box=document.getElementById("searchResults");
+    if(!q){ box.innerHTML=""; return; }
+    const r=await call({action:"search", q});
+    if(!r.ok){ box.innerHTML='<div class="note">'+esc(r.error||"Error")+'</div>'; return; }
+    if(!r.members.length){ box.innerHTML='<div class="note">No members found.</div>'; return; }
+    box.innerHTML = r.members.map(m=>'<div class="searchresult" onclick="BACK_TO=\'home\';openMember(\''+m.id+'\')"><b>'+esc((m.first_name||"")+" "+(m.last_name||""))+'</b> · '+esc(m.email||"")+' <span class="tag">'+(m.current_streak??0)+'wk</span></div>').join("");
+  }
+
+  async function loadQueue(){
+    const q=document.getElementById("queue"); if(!q) return;
     const flaggedOnly = document.getElementById("flaggedOnly").checked; window._flagged=flaggedOnly;
+    q.innerHTML='<div class="empty">Loading...</div>';
     const res = await call({ action:"pending", flaggedOnly });
-    const q=document.getElementById("queue");
     if(!res.ok){ q.innerHTML='<div class="empty">'+esc(res.error||"Error")+'</div>'; return; }
     if(!res.items.length){ q.innerHTML='<div class="empty">Nothing waiting. All caught up. 👊</div>'; return; }
     q.innerHTML = res.items.map(renderCard).join("");
@@ -195,11 +214,7 @@
     const r=await call({action:"list_members"});
     if(!r.ok){ view.innerHTML='<div class="empty">'+esc(r.error||"Error")+'</div>'; return; }
     MEMBERS=r.members||[];
-    view.innerHTML='<div style="display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">'
-      + '<input type="text" id="memFilter" placeholder="Filter by name or email" style="max-width:320px;" oninput="renderMembers()" />'
-      + '<span class="note" style="margin:0;">'+MEMBERS.length+' member'+(MEMBERS.length===1?"":"s")+'</span>'
-      + '<button style="margin-left:auto;" onclick="loadMembers()">Refresh</button></div>'
-      + '<div id="memTable"></div>';
+    view.innerHTML='<div class="controls" style="margin-bottom:12px;"><input type="text" id="memFilter" placeholder="Filter by name or email" style="max-width:320px;" oninput="renderMembers()" /><span class="note" style="margin:0;">'+MEMBERS.length+' member'+(MEMBERS.length===1?"":"s")+'</span><button style="margin-left:auto;" onclick="loadMembers()">Refresh</button></div><div id="memTable"></div>';
     renderMembers();
   }
   function renderMembers(){
@@ -209,7 +224,7 @@
     const box=document.getElementById("memTable");
     if(!list.length){ box.innerHTML='<div class="empty">No members'+(f?" match that":" yet")+'.</div>'; return; }
     let h='<table class="members"><thead><tr><th>Name</th><th>Onboarded</th><th>Check-ins</th><th>Replies sent</th><th>Last check-in</th><th>Streak</th><th>Welcome</th></tr></thead><tbody>';
-    h+= list.map(m=>'<tr onclick="openMember(\''+m.id+'\')">'
+    h+= list.map(m=>'<tr onclick="BACK_TO=\'members\';openMember(\''+m.id+'\')">'
       + '<td><b>'+esc((m.first_name||"")+" "+(m.last_name||""))+'</b><div class="note" style="margin:0;">'+esc(m.email||"")+'</div></td>'
       + '<td>'+(m.onboarded?'<span class="yes">Yes</span>':'<span class="no">No</span>')+'</td>'
       + '<td><span class="num">'+(m.checkin_count||0)+'</span></td>'
@@ -224,12 +239,11 @@
 
   /* ---------------- Member record (CRM) ---------------- */
   async function openMember(id){
-    document.getElementById("viewTitle").textContent="Member";
     const r=await call({action:"member_detail", member_id:id});
     const view=document.getElementById("view");
     if(!r.ok){ view.innerHTML='<div class="empty">'+esc(r.error||"Error")+'</div>'; return; }
     const m=r.member||{}, p=r.profile||{};
-    let h='<span class="backlink" onclick="showView(\'members\')">&larr; Back to members</span>';
+    let h='<span class="backlink" onclick="showView(\''+BACK_TO+'\')">&larr; Back</span>';
     h+='<div class="card">';
     h+='<div class="memname">'+esc((m.first_name||"")+" "+(m.last_name||""))+'</div>';
     h+='<div class="meta">'+esc(m.email||"")+' · joined '+dstr(m.join_date)+' · '+(m.current_streak??0)+'wk streak (best '+(m.longest_streak??0)+') · status '+esc(m.status||"active")+'</div>';
