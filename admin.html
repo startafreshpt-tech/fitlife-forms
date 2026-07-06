@@ -104,6 +104,7 @@
       <div class="brand">Fit Life After 40</div>
       <a class="navitem" id="nav-home" onclick="showView('home')">Home</a>
       <a class="navitem" id="nav-members" onclick="showView('members')">Members</a>
+      <a class="navitem" id="nav-community" onclick="showView('community')">Community</a>
       <div class="foot"><button onclick="logout()">Log out</button></div>
     </aside>
     <main class="content">
@@ -144,6 +145,39 @@
   function showView(name){
     if(name==="home"){ setActive("home"); renderHome(); }
     else if(name==="members"){ setActive("members"); loadMembers(); }
+    else if(name==="community"){ setActive("community"); loadInsights(); }
+  }
+
+  /* ---------------- Community insights ---------------- */
+  async function loadInsights(){
+    const view=document.getElementById("view");
+    view.innerHTML='<div class="empty">Loading community insights...</div>';
+    renderInsights(await call({action:"get_insights"}));
+  }
+  async function refreshInsights(){
+    flash("Analysing the community, one moment...");
+    const btn=document.getElementById("refreshInsightsBtn"); if(btn){ btn.disabled=true; btn.textContent="Analysing..."; }
+    renderInsights(await call({action:"refresh_insights"}));
+  }
+  function statCard(label, val){ return '<div class="tile" style="text-align:center;"><div class="note" style="margin:0;">'+esc(label)+'</div><div style="font-size:24px; font-weight:700; color:var(--green-dark); margin-top:4px;">'+esc(String(val))+'</div></div>'; }
+  function insightList(title, arr){ if(!arr||!arr.length) return ''; return '<div class="card"><b>'+esc(title)+'</b><ul style="margin:8px 0 0; padding-left:20px;">'+arr.map(x=>'<li style="margin-bottom:4px;">'+esc(x)+'</li>').join("")+'</ul></div>'; }
+  function renderInsights(r){
+    const view=document.getElementById("view");
+    if(!r.ok){ view.innerHTML='<div class="empty">'+esc(r.error||"Error")+'</div>'; return; }
+    const s=r.stats||{}; const ai=r.ai;
+    let h='<div class="controls" style="margin-bottom:14px;"><strong style="font-size:16px; color:var(--green-dark);">Community insights</strong><span class="note" style="margin:0;">'+(r.generated_at?("themes updated "+dstr(r.generated_at)):"themes not generated yet")+'</span><button class="primary" id="refreshInsightsBtn" style="margin-left:auto;" onclick="refreshInsights()">Refresh insights</button></div>';
+    h+='<p class="note" style="margin:-6px 0 14px;">Aggregate patterns across everyone who has onboarded. No individual is named.</p>';
+    h+='<div class="linkrow">'
+      + statCard('Members', s.members??0) + statCard('Onboarded', s.onboarded??0) + statCard('Check-ins', s.checkins??0)
+      + statCard('Avg importance', s.avg_importance!=null ? (s.avg_importance+'/10') : '-')
+      + statCard('Studio / Online', (s.studio??0)+' / '+(s.online??0))
+      + statCard('Avg streak', (s.avg_streak??0)+'wk') + '</div>';
+    if(!ai){ h+='<div class="empty">No themes yet. Click Refresh insights to read the onboarding answers and pull out the patterns.</div>'; view.innerHTML=h; return; }
+    if(ai.summary) h+='<div class="card"><b>Overview</b><div style="margin-top:6px;">'+esc(ai.summary)+'</div></div>';
+    h+= insightList('Top goals', ai.top_goals) + insightList('What drives them (their why)', ai.top_motivations)
+      + insightList('Common obstacles', ai.top_obstacles) + insightList('Accountability themes', ai.accountability_themes)
+      + insightList('Worth noticing', ai.observations);
+    view.innerHTML=h;
   }
 
   /* ---------------- Home (original layout) ---------------- */
