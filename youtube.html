@@ -133,19 +133,20 @@
   }
 
   /* ---------- Title Generator ---------- */
-  let GEN = { mode:"claude", topic:"", titles:[] };
+  let GEN = { mode:"claude", topic:"", titles:[], mine:null };
   function renderGen(){
     const modes=[["claude","✦ Proven formats"],["surprise","⚡ Surprise me"]];
-    let h='<p class="lead">Enter a topic. Six titles are generated in your channel style, then each is scored for click-through potential.</p>';
-    h+='<div class="modes">'+modes.map(m=>'<button class="modebtn" style="'+(GEN.mode===m[0]?('color:'+C.green+';border-color:'+C.green+'66;background:'+C.green+'14'):'')+'" onclick="GEN.mode=\''+m[0]+'\';GEN.titles=[];renderGen()">'+m[1]+'</button>').join("")+'</div>';
-    h+='<div class="row"><input id="topic" value="'+esc(GEN.topic)+'" placeholder="e.g. walking for weight loss after 50" onkeydown="if(event.key===\'Enter\')genTitles()" /><button class="go" id="genBtn" onclick="genTitles()">'+(GEN.mode==="surprise"?"⚡ Surprise Me":"Generate Titles")+'</button></div>';
+    let h='<p class="lead">Enter a topic to generate six titles, or paste your own title and hit Score my title to grade it and get stronger alternatives.</p>';
+    h+='<div class="modes">'+modes.map(m=>'<button class="modebtn" style="'+(GEN.mode===m[0]?('color:'+C.green+';border-color:'+C.green+'66;background:'+C.green+'14'):'')+'" onclick="GEN.mode=\''+m[0]+'\';GEN.titles=[];GEN.mine=null;renderGen()">'+m[1]+'</button>').join("")+'</div>';
+    h+='<div class="row" style="flex-wrap:wrap"><input id="topic" value="'+esc(GEN.topic)+'" placeholder="A topic, or paste a title you want to improve" onkeydown="if(event.key===\'Enter\')genTitles()" /><button class="go" id="genBtn" onclick="genTitles()">'+(GEN.mode==="surprise"?"⚡ Surprise Me":"Generate Titles")+'</button><button class="go" id="improveBtn" style="background:var(--gold)" onclick="scoreImprove()">Score my title</button></div>';
     h+='<div id="genErr" class="err" style="display:none;"></div><div id="genList"></div>';
     document.getElementById("view").innerHTML=h;
-    if(GEN.titles.length) paintGen();
+    if(GEN.titles.length||GEN.mine) paintGen();
   }
   async function genTitles(){
     GEN.topic=document.getElementById("topic").value.trim();
     if(!GEN.topic) return;
+    GEN.mine=null;
     const btn=document.getElementById("genBtn"); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Generating...';
     document.getElementById("genErr").style.display="none";
     const r=await call({action:"generate", topic:GEN.topic, mode:GEN.mode});
@@ -156,15 +157,32 @@
     GEN.titles.forEach((t,i)=>scoreGen(i,t.title));
   }
   async function scoreGen(i,title){ const r=await call({action:"score", title}); GEN.titles[i]={title, score:r.score??null, feedback:r.feedback||"", loading:false}; paintGen(); }
-  function paintGen(){
-    const list=document.getElementById("genList"); if(!list) return;
-    const sorted=[...GEN.titles].sort((a,b)=>{ if(a.loading&&!b.loading)return 1; if(!a.loading&&b.loading)return -1; return (b.score||0)-(a.score||0); });
-    list.innerHTML=sorted.map(t=>{ const col=scoreColor(t.score); return '<div class="tcard" style="border-color:'+(t.score>=70?col+"55":C.line)+'">'
+  function titleCard(t){ const col=scoreColor(t.score); return '<div class="tcard" style="border-color:'+(t.score>=70?col+"55":C.line)+'">'
       +'<div class="sbox" style="background:'+(t.loading?"#f0eee7":col+"18")+';border:1px solid '+(t.loading?C.line:col+"44")+';color:'+col+'">'+(t.loading?'<span class="spin"></span>':(t.score!=null?t.score:"—"))+'</div>'
       +'<div class="tbody"><div class="ttitle">'+esc(t.title)+'</div>'+(t.loading?'<div class="tfb">Scoring...</div>':(t.feedback?'<div class="tfb">'+esc(t.feedback)+'</div>':''))+'</div>'
-      +'<button class="copy" onclick="copy(\''+esc(t.title).replace(/\x27/g,"\\x27")+'\')">Copy</button></div>'; }).join("")
-      +'<div class="foot">Estimated score, 70+ is the target. Live VidIQ scoring coming once your VidIQ is connected.</div>';
+      +'<button class="copy" onclick="copy(\''+esc(t.title).replace(/\x27/g,"\\x27")+'\')">Copy</button></div>'; }
+  function paintGen(){
+    const list=document.getElementById("genList"); if(!list) return;
+    let h="";
+    if(GEN.mine){ h+='<div class="label">Your title</div>'+titleCard(GEN.mine); if(GEN.titles.length) h+='<div class="label" style="margin-top:16px">Stronger alternatives</div>'; }
+    const sorted=[...GEN.titles].sort((a,b)=>{ if(a.loading&&!b.loading)return 1; if(!a.loading&&b.loading)return -1; return (b.score||0)-(a.score||0); });
+    h+=sorted.map(titleCard).join("");
+    if(GEN.titles.length) h+='<div class="foot">Estimated score, 70+ is the target. Live VidIQ scoring coming once your VidIQ is connected.</div>';
+    list.innerHTML=h;
   }
+  async function scoreImprove(){
+    const title=document.getElementById("topic").value.trim(); if(!title) return;
+    const btn=document.getElementById("improveBtn"); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Working...';
+    document.getElementById("genErr").style.display="none";
+    GEN.topic=title; GEN.mine={title,score:null,feedback:"",loading:true}; GEN.titles=[]; paintGen();
+    scoreMine();
+    const r=await call({action:"improve", title});
+    btn.disabled=false; btn.textContent="Score my title";
+    if(!r.ok||!r.titles||!r.titles.length){ const e=document.getElementById("genErr"); e.style.display="block"; e.textContent=r.error||"Could not get alternatives. Try again."; return; }
+    GEN.titles=r.titles.map(t=>({title:t,score:null,feedback:"",loading:true})); paintGen();
+    GEN.titles.forEach((t,i)=>scoreGen(i,t.title));
+  }
+  async function scoreMine(){ const r=await call({action:"score", title:GEN.mine.title}); if(GEN.mine){ GEN.mine.score=r.score??null; GEN.mine.feedback=r.feedback||""; GEN.mine.loading=false; paintGen(); } }
 
   /* ---------- Title Builder ---------- */
   const COLS=[
