@@ -445,3 +445,45 @@ function renderMembers(){ var counts={all:MEMBERS.length,needs:0,quiet:0,"new":0
   };
 })();
 </script>
+<script>
+(function(){
+  document.head.insertAdjacentHTML("beforeend","<style>.mdone{margin-left:8px;font-size:11px;font-weight:600;padding:3px 9px;border:1px solid var(--green);color:var(--green);background:var(--green-soft);border-radius:999px;cursor:pointer;white-space:nowrap}.mdone:hover{background:var(--green);color:#fff}</style>");
+  var _origRenderMembers = window.renderMembers;
+  window.renderMembers = function(){
+    if(_origRenderMembers) _origRenderMembers();
+    try{
+      var rows = document.querySelectorAll("#memTable table.members tbody tr");
+      rows.forEach(function(tr){
+        var oc = tr.getAttribute("onclick") || "";
+        var mm = oc.match(/openMember\('([^']+)'\)/);
+        if(!mm) return;
+        var id = mm[1];
+        var mem = (MEMBERS||[]).find(function(x){ return String(x.id)===String(id); });
+        if(!mem || memStatus(mem)!=="needs") return;
+        var statusCell = tr.children[1];
+        if(!statusCell || statusCell.querySelector(".mdone")) return;
+        var b = document.createElement("button");
+        b.className = "mdone";
+        b.textContent = "Mark done";
+        b.onclick = function(ev){ ev.stopPropagation(); markMemberDone(id, b); };
+        statusCell.appendChild(b);
+      });
+    }catch(e){}
+  };
+  window.markMemberDone = async function(id, btn){
+    try{
+      if(btn){ btn.disabled = true; btn.textContent = "..."; }
+      var r = await call({action:"member_detail", member_id:id});
+      var pend = (r.checkins||[]).filter(function(c){ return !(c.sent_at || c.response_status==="sent" || c.response_status==="replied"); });
+      for(var i=0;i<pend.length;i++){
+        var c = pend[i];
+        var text = c.final_response || c.ai_draft_response || "";
+        if(text){ await call({action:"save_edit", checkin_id:c.id, text:text}); }
+        await call({action:"mark_sent", checkin_id:c.id});
+      }
+      if(window.flash) flash("Marked replied");
+      loadMembers();
+    }catch(e){ if(window.flash) flash("Could not update", false); loadMembers(); }
+  };
+})();
+</script>
